@@ -4,3 +4,7 @@
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
+sf_contracts.patches.add_signed_contract_document_field
+sf_contracts.patches.add_contract_lifecycle_fields
+sf_contracts.patches.add_contract_business_fields
+sf_contracts.patches.setup_legal_workspace_dashboard

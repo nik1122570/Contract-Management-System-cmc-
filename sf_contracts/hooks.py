@@ -43,7 +43,8 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Contract": "public/js/contract.js"}
+doctype_list_js = {"Contract": "public/js/contract_list.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -137,34 +138,29 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Contract": {
+		"validate": [
+			"sf_contracts.contract_lifecycle.update_contract_lifecycle_status",
+		],
+		"on_update": "sf_contracts.contract_compliance.ensure_contract_compliance_tracker",
+		"before_update_after_submit": "sf_contracts.contract_lifecycle.update_contract_lifecycle_status",
+		"on_update_after_submit": "sf_contracts.contract_compliance.ensure_contract_compliance_tracker",
+	}
+}
+
+override_doctype_dashboards = {
+	"Contract": "sf_contracts.contract_dashboard.get_data",
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"sf_contracts.tasks.all"
-# 	],
-# 	"daily": [
-# 		"sf_contracts.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"sf_contracts.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"sf_contracts.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"sf_contracts.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"daily": [
+		"sf_contracts.contract_lifecycle.update_lifecycle_status_for_contracts",
+	],
+}
 
 # Testing
 # -------
@@ -246,4 +242,3 @@ app_license = "mit"
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-

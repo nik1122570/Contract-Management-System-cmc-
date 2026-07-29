@@ -1,0 +1,123 @@
+{
+ "charts": [],
+ "content": "[{\"id\": \"sfcm_header_dashboard\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Contract Management Dashboard</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_total_contracts_card\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Total Contracts\", \"col\": 2}}, {\"id\": \"sfcm_pending_contracts_card\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Pending Contracts\", \"col\": 2}}, {\"id\": \"sfcm_active_contracts_card\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Active Contracts\", \"col\": 2}}, {\"id\": \"sfcm_terminated_contracts_card\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Terminated Contracts\", \"col\": 2}}, {\"id\": \"sfcm_expired_contracts_card\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Expired Contracts\", \"col\": 2}}, {\"id\": \"sfcm_completed_contracts_card\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Completed Contracts\", \"col\": 2}}, {\"id\": \"sfcm_spacer_1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"sfcm_header_shortcuts\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Shortcuts</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_contract_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Contract\", \"col\": 3}}, {\"id\": \"sfcm_compliance_tracker_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Compliance Tracker\", \"col\": 3}}, {\"id\": \"sfcm_spacer_2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"sfcm_header_records\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Records</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_card_records\", \"type\": \"card\", \"data\": {\"card_name\": \"Records\", \"col\": 4}}]",
+ "creation": "2026-07-13 00:00:00",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "briefcase",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Legal",
+ "links": [
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Contract Dashboard",
+   "link_count": 0,
+   "link_to": "contract-dashboard",
+   "link_type": "Page",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Records",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Contract",
+   "link_count": 0,
+   "link_to": "Contract",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Contract Template",
+   "link_count": 0,
+   "link_to": "Contract Template",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-07-15 23:35:17.108260",
+ "modified_by": "Administrator",
+ "module": "SF Contracts",
+ "name": "Legal",
+ "number_cards": [
+  {
+   "label": "Total Contracts",
+   "number_card_name": "Total Contracts"
+  },
+  {
+   "label": "Pending Contracts",
+   "number_card_name": "Pending Contracts"
+  },
+  {
+   "label": "Active Contracts",
+   "number_card_name": "Active Contracts"
+  },
+  {
+   "label": "Terminated Contracts",
+   "number_card_name": "Terminated Contracts"
+  },
+  {
+   "label": "Expired Contracts",
+   "number_card_name": "Expired Contracts"
+  },
+  {
+   "label": "Completed Contracts",
+   "number_card_name": "Completed Contracts"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [
+  {
+   "document_type": "Party Type",
+   "label": "Parties",
+   "quick_list_filter": "[]"
+  }
+ ],
+ "restrict_to_domain": "",
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "#009847",
+   "doc_view": "List",
+   "format": "{}",
+   "icon": "file",
+   "label": "Contract",
+   "link_to": "Contract",
+   "stats_filter": "{}",
+   "type": "DocType"
+  },
+  {
+   "color": "#005aa8",
+   "doc_view": "List",
+   "format": "{}",
+   "icon": "review",
+   "label": "Compliance Tracker",
+   "link_to": "Contract Compliance Tracker",
+   "stats_filter": "{}",
+   "type": "DocType"
+  }
+ ],
+ "title": "Legal"
+}
