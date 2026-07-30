@@ -15,7 +15,8 @@ CONTRACT_NUMBER_CARDS = [
 	},
 	{
 		"name": "Pending Contracts",
-		"status": "Pending",
+		"label": "Pending Execution",
+		"status": "Pending Execution",
 		"method": "sf_contracts.contract_number_cards.pending_contracts",
 		"color": "#b76b00",
 		"background_color": "#fff8e8",
@@ -36,14 +37,16 @@ CONTRACT_NUMBER_CARDS = [
 	},
 	{
 		"name": "Expired Contracts",
-		"status": "Expired",
+		"label": "Expired Services Continuing",
+		"status": "Expired – Services Continuing",
 		"method": "sf_contracts.contract_number_cards.expired_contracts",
 		"color": "#b42318",
 		"background_color": "#fff0f0",
 	},
 	{
 		"name": "Completed Contracts",
-		"status": "Completed",
+		"label": "Closed Contracts",
+		"status": "Closed",
 		"method": "sf_contracts.contract_number_cards.completed_contracts",
 		"color": "#005aa8",
 		"background_color": "#eaf4ff",
@@ -455,7 +458,7 @@ def create_contract_number_cards():
 			card = frappe.new_doc("Number Card")
 			card.name = card_config["name"]
 
-		card.label = card_config["name"]
+		card.label = card_config.get("label") or card_config["name"]
 		card.type = "Custom"
 		card.document_type = "Contract"
 		card.method = card_config["method"]
@@ -481,7 +484,7 @@ def update_legal_workspace():
 			"number_cards",
 			{
 				"number_card_name": card_config["name"],
-				"label": card_config["name"],
+				"label": card_config.get("label") or card_config["name"],
 			},
 		)
 

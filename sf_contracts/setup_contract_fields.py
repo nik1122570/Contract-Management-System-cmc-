@@ -31,14 +31,14 @@ def add_contract_lifecycle_fields():
 				"fieldname": "sf_contract_lifecycle_status",
 				"label": "Contract Lifecycle Status",
 				"fieldtype": "Select",
-				"options": "Pending\nActive\nExpired\nCompleted\nTerminated",
-				"default": "Pending",
+				"options": "Draft\nPending Execution\nExecuted – Awaiting Commencement\nActive\nExpired – Services Continuing\nClosed\nTerminated",
+				"default": "Draft",
 				"insert_after": "status",
 				"allow_on_submit": 1,
 				"in_list_view": 1,
 				"in_standard_filter": 1,
 				"no_copy": 1,
-				"description": "Legal-facing contract status used for NEST-style contract tracking.",
+				"description": "Legal-facing contract lifecycle status used for contract tracking.",
 			},
 			{
 				"fieldname": "sf_completion_date",
@@ -46,7 +46,7 @@ def add_contract_lifecycle_fields():
 				"fieldtype": "Date",
 				"insert_after": "sf_contract_lifecycle_status",
 				"allow_on_submit": 1,
-				"depends_on": "eval:doc.sf_contract_lifecycle_status=='Completed'",
+				"depends_on": "eval:doc.sf_contract_lifecycle_status=='Closed'",
 				"no_copy": 1,
 			},
 			{
@@ -71,29 +71,60 @@ def add_contract_lifecycle_fields():
 	}
 
 	create_custom_fields(custom_fields, update=True)
+	migrate_contract_lifecycle_status_values()
 	frappe.clear_cache(doctype="Contract")
+
+
+def migrate_contract_lifecycle_status_values():
+	"""Map old SF lifecycle values to the current Legal vocabulary."""
+	if not frappe.db.has_column("Contract", "sf_contract_lifecycle_status"):
+		return
+
+	status_map = {
+		"Pending": "Pending Execution",
+		"Expired": "Expired – Services Continuing",
+		"Completed": "Closed",
+	}
+
+	for old_status, new_status in status_map.items():
+		for contract in frappe.get_all(
+			"Contract",
+			filters={"sf_contract_lifecycle_status": old_status},
+			pluck="name",
+		):
+			frappe.db.set_value(
+				"Contract",
+				contract,
+				"sf_contract_lifecycle_status",
+				new_status,
+				update_modified=False,
+			)
 
 
 def add_contract_business_fields():
 	"""Add SF Group business fields used for legal contract reporting."""
 	custom_fields = {
 		"Contract": [
-			{
-				"fieldname": "sf_contractor",
-				"label": "Contractor",
-				"fieldtype": "Data",
-				"insert_after": "party_name",
-				"allow_on_submit": 1,
+		{
+			"fieldname": "sf_contractor",
+			"label": "Contractor",
+			"fieldtype": "Link",
+			"options": "Contractor",
+			"insert_after": "party_name",
+			"is_system_generated": 0,
+			"allow_on_submit": 1,
 				"in_list_view": 1,
 				"in_standard_filter": 1,
 				"description": "External contractor, supplier, customer, or counterparty name used for legal reporting.",
 			},
-			{
-				"fieldname": "sf_contract_type",
-				"label": "Contract Type",
-				"fieldtype": "Data",
-				"insert_after": "sf_contractor",
-				"allow_on_submit": 1,
+		{
+			"fieldname": "sf_contract_type",
+			"label": "Contract Type",
+			"fieldtype": "Link",
+			"options": "Contract Type",
+			"insert_after": "sf_contractor",
+			"is_system_generated": 0,
+			"allow_on_submit": 1,
 				"in_list_view": 1,
 				"in_standard_filter": 1,
 				"description": "Business type/category of this contract, for example supply of Energy Meters.",
@@ -103,6 +134,7 @@ def add_contract_business_fields():
 				"label": "Subsidiary Signee",
 				"fieldtype": "Data",
 				"insert_after": "signee",
+				"is_system_generated": 0,
 				"allow_on_submit": 1,
 				"description": "Name of the SF Group or subsidiary officer who signed the contract.",
 			},

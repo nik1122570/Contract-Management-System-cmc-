@@ -3,13 +3,23 @@ from frappe import _
 from frappe.utils import add_days, date_diff, getdate, nowdate
 
 
-STATE_ORDER = ("Pending", "Active", "Terminated", "Expired", "Completed")
+STATE_ORDER = (
+	"Draft",
+	"Pending Execution",
+	"Executed – Awaiting Commencement",
+	"Active",
+	"Expired – Services Continuing",
+	"Closed",
+	"Terminated",
+)
 STATE_COLORS = {
-	"Pending": "orange",
+	"Draft": "gray",
+	"Pending Execution": "orange",
+	"Executed – Awaiting Commencement": "blue",
 	"Active": "green",
 	"Terminated": "red",
-	"Expired": "red",
-	"Completed": "blue",
+	"Expired – Services Continuing": "red",
+	"Closed": "blue",
 }
 
 
@@ -49,7 +59,7 @@ def _days_open(creation):
 
 
 def _serialize_contract(contract):
-	lifecycle_status = contract.get("sf_contract_lifecycle_status") or "Pending"
+	lifecycle_status = contract.get("sf_contract_lifecycle_status") or "Draft"
 
 	return {
 		"name": contract.name,
@@ -88,7 +98,7 @@ def _build_state_cards():
 	contracts_by_state = {state: [] for state in STATE_ORDER}
 
 	for contract in all_contracts:
-		state = contract["lifecycle_status"] or "Pending"
+		state = contract["lifecycle_status"] or "Draft"
 		contracts_by_state.setdefault(state, []).append(contract)
 
 	return [
@@ -126,7 +136,7 @@ def _build_watchlists():
 	)
 	unsigned_pending = _get_contracts(
 		filters={
-			"sf_contract_lifecycle_status": "Pending",
+			"sf_contract_lifecycle_status": "Pending Execution",
 			"is_signed": 0,
 		},
 		order_by="creation asc",
@@ -164,8 +174,8 @@ def _build_predictor_summary(watchlists, cards):
 		},
 		{
 			"label": "Expired contracts requiring action",
-			"value": card_counts.get("Expired", 0),
-			"indicator": "red" if card_counts.get("Expired", 0) else "green",
+			"value": card_counts.get("Expired – Services Continuing", 0),
+			"indicator": "red" if card_counts.get("Expired – Services Continuing", 0) else "green",
 		},
 	]
 

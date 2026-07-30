@@ -205,9 +205,6 @@ function get_compliance_summary(frm) {
 function get_compliance_dashboard_html(summary) {
 	const status_label = summary.total ? `${summary.percentage}% Compliant` : "No Items";
 	const progress_class = summary.non_compliant ? "risk" : "clear";
-	const term_rows_html = summary.term_rows.length
-		? summary.term_rows.map(get_term_summary_html).join("")
-		: `<div class="sf-compliance-empty">${__("No compliance items have been entered yet.")}</div>`;
 
 	return `
 		<div class="sf-compliance-dashboard">
@@ -231,10 +228,6 @@ function get_compliance_dashboard_html(summary) {
 				${get_summary_card_html(__("Non-Compliant"), summary.non_compliant, "non-compliant")}
 				${get_summary_card_html(__("Pending"), summary.pending, "pending")}
 			</div>
-
-			<div class="sf-compliance-term-list">
-				${term_rows_html}
-			</div>
 		</div>
 	`;
 }
@@ -244,29 +237,6 @@ function get_summary_card_html(label, value, status_class) {
 		<div class="sf-compliance-summary-card ${status_class}">
 			<div class="sf-compliance-summary-label">${frappe.utils.escape_html(label)}</div>
 			<div class="sf-compliance-summary-value">${frappe.utils.escape_html(String(value))}</div>
-		</div>
-	`;
-}
-
-function get_term_summary_html(term) {
-	const percentage = term.total ? Math.round((term.compliant / term.total) * 100) : 0;
-	const term_class = term.non_compliant ? "non-compliant" : "compliant";
-
-	return `
-		<div class="sf-compliance-term-row ${term_class}">
-			<div class="sf-compliance-term-main">
-				<div class="sf-compliance-term-name">${frappe.utils.escape_html(term.label)}</div>
-				<div class="sf-compliance-term-meta">
-					${term.risk ? `${frappe.utils.escape_html(__("Risk"))}: ${frappe.utils.escape_html(term.risk)} | ` : ""}
-					${term.compliant}/${term.total} ${frappe.utils.escape_html(__("compliant"))}
-				</div>
-			</div>
-			<div class="sf-compliance-term-counts">
-				<span class="sf-mini-pill compliant">${term.compliant}</span>
-				<span class="sf-mini-pill non-compliant">${term.non_compliant}</span>
-				<span class="sf-mini-pill pending">${term.pending}</span>
-				<strong>${percentage}%</strong>
-			</div>
 		</div>
 	`;
 }
@@ -483,42 +453,6 @@ function inject_compliance_status_styles() {
 			margin-top: 4px;
 		}
 
-		.sf-compliance-term-list {
-			display: grid;
-			gap: 8px;
-		}
-
-		.sf-compliance-term-row {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			gap: 12px;
-			padding: 10px 12px;
-			border-radius: 8px;
-			border-left: 4px solid #12b76a;
-			background: #ffffff;
-			border-top: 1px solid #eaecf0;
-			border-right: 1px solid #eaecf0;
-			border-bottom: 1px solid #eaecf0;
-		}
-
-		.sf-compliance-term-row.non-compliant {
-			border-left-color: #f04438;
-		}
-
-		.sf-compliance-term-name {
-			color: #101828;
-			font-weight: 700;
-			line-height: 1.3;
-		}
-
-		.sf-compliance-term-counts {
-			display: inline-flex;
-			align-items: center;
-			gap: 6px;
-			white-space: nowrap;
-		}
-
 		.sf-mini-pill {
 			display: inline-flex;
 			align-items: center;
@@ -547,8 +481,7 @@ function inject_compliance_status_styles() {
 		}
 
 		@media (max-width: 768px) {
-			.sf-compliance-dashboard-header,
-			.sf-compliance-term-row {
+			.sf-compliance-dashboard-header {
 				flex-direction: column;
 				align-items: stretch;
 			}

@@ -3,19 +3,19 @@ import frappe
 
 STATUS_LABELS = {
 	"total": "Total Contracts",
-	"pending": "Pending Contracts",
+	"pending": "Pending Execution",
 	"active": "Active Contracts",
 	"terminated": "Terminated Contracts",
-	"expired": "Expired Contracts",
-	"completed": "Completed Contracts",
+	"expired": "Expired Services Continuing",
+	"completed": "Closed Contracts",
 }
 
 STATUS_VALUES = {
-	"pending": "Pending",
+	"pending": "Pending Execution",
 	"active": "Active",
 	"terminated": "Terminated",
-	"expired": "Expired",
-	"completed": "Completed",
+	"expired": "Expired – Services Continuing",
+	"completed": "Closed",
 }
 
 

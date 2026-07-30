@@ -1,13 +1,15 @@
 window.sfContractLifecycleColors = window.sfContractLifecycleColors || {
-	Pending: "orange",
+	Draft: "gray",
+	"Pending Execution": "orange",
+	"Executed – Awaiting Commencement": "blue",
 	Active: "green",
-	Expired: "red",
-	Completed: "blue",
+	"Expired – Services Continuing": "red",
+	Closed: "blue",
 	Terminated: "red",
 };
 
 function getContractLifecycleIndicator(doc) {
-	const status = doc.sf_contract_lifecycle_status || "Pending";
+	const status = doc.sf_contract_lifecycle_status || "Draft";
 	const color = window.sfContractLifecycleColors[status] || "gray";
 
 	return [__(status), color, `sf_contract_lifecycle_status,=,${status}`];

@@ -3,7 +3,13 @@ from frappe import _
 from frappe.utils import getdate, nowdate
 
 
-FINAL_STATUSES = {"Completed", "Terminated"}
+FINAL_STATUSES = {"Closed", "Terminated"}
+MANUAL_STATUSES = FINAL_STATUSES | {"Expired – Services Continuing"}
+LEGACY_STATUS_MAP = {
+	"Pending": "Pending Execution",
+	"Expired": "Expired – Services Continuing",
+	"Completed": "Closed",
+}
 
 
 def set_submitted_for_signing_on_draft(doc):
@@ -27,21 +33,29 @@ def validate_signed_contract_document(doc):
 
 
 def get_lifecycle_status(contract) -> str:
-	if contract.get("sf_contract_lifecycle_status") in FINAL_STATUSES:
-		return contract.sf_contract_lifecycle_status
+	current_status = LEGACY_STATUS_MAP.get(
+		contract.get("sf_contract_lifecycle_status"),
+		contract.get("sf_contract_lifecycle_status"),
+	)
+
+	if current_status in MANUAL_STATUSES:
+		return current_status
+
+	if contract.get("docstatus") == 0:
+		return "Draft"
 
 	if not contract.get("is_signed"):
-		return "Pending"
+		return "Pending Execution"
 
 	today = getdate(nowdate())
 	start_date = getdate(contract.start_date) if contract.get("start_date") else None
 	end_date = getdate(contract.end_date) if contract.get("end_date") else None
 
 	if end_date and today > end_date:
-		return "Expired"
+		return "Expired – Services Continuing"
 
 	if start_date and today < start_date:
-		return "Pending"
+		return "Executed – Awaiting Commencement"
 
 	return "Active"
 
@@ -64,6 +78,7 @@ def update_lifecycle_status_for_contracts():
 		"Contract",
 		fields=[
 			"name",
+			"docstatus",
 			"is_signed",
 			"start_date",
 			"end_date",
