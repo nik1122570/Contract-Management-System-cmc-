@@ -1,8 +1,13 @@
 {
  "charts": [],
- "content": "[{\"id\":\"sfcm_header_dashboard\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Contract Management Dashboard</b></span>\",\"col\":12}},{\"id\":\"sfcm_total_contracts_card\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Contracts\",\"col\":2}},{\"id\":\"sfcm_active_contracts_card\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Active Contracts\",\"col\":2}},{\"id\":\"sfcm_terminated_contracts_card\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Terminated Contracts\",\"col\":2}},{\"id\":\"lcCE_S2OIN\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Completed Contracts\",\"col\":4}},{\"id\":\"5NXy5Uf7Bm\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pending Execution\",\"col\":4}},{\"id\":\"xpd-9ztGu-\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Expired , Contiuing Contracts\",\"col\":4}},{\"id\":\"sfcm_spacer_1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"sfcm_header_shortcuts\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Shortcuts</b></span>\",\"col\":12}},{\"id\":\"sfcm_contract_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Contract\",\"col\":3}},{\"id\":\"sfcm_compliance_tracker_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Compliance Tracker\",\"col\":3}},{\"id\":\"sfcm_spacer_2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"sfcm_header_records\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Records</b></span>\",\"col\":12}},{\"id\":\"sfcm_card_records\",\"type\":\"card\",\"data\":{\"card_name\":\"Records\",\"col\":4}}]",
+ "content": "[{\"id\": \"sfcm_header_dashboard\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Contract Management Dashboard</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_custom_dashboard\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"SF Contract Dashboard\", \"col\": 12}}, {\"id\": \"sfcm_spacer_1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"sfcm_header_shortcuts\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Shortcuts</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_contract_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Contract\", \"col\": 3}}, {\"id\": \"sfcm_compliance_tracker_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Compliance Tracker\", \"col\": 3}}, {\"id\": \"sfcm_spacer_2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"sfcm_header_records\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Records</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_card_records\", \"type\": \"card\", \"data\": {\"card_name\": \"Records\", \"col\": 4}}]",
  "creation": "2026-07-13 00:00:00",
- "custom_blocks": [],
+ "custom_blocks": [
+  {
+   "custom_block_name": "SF Contract Dashboard",
+   "label": "Contract Management Dashboard"
+  }
+ ],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
@@ -13,26 +18,15 @@
  "label": "Legal",
  "links": [
   {
-   "dependencies": "",
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Contract Dashboard",
-   "link_count": 0,
-   "link_to": "contract-dashboard",
-   "link_type": "Page",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
    "hidden": 0,
    "is_query_report": 0,
    "label": "Records",
    "link_count": 0,
+   "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
   },
   {
-   "dependencies": "",
    "hidden": 0,
    "is_query_report": 0,
    "label": "Contract",
@@ -43,7 +37,16 @@
    "type": "Link"
   },
   {
-   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Contract Compliance Tracker",
+   "link_count": 0,
+   "link_to": "Contract Compliance Tracker",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
    "hidden": 0,
    "is_query_report": 0,
    "label": "Contract Template",
@@ -54,36 +57,11 @@
    "type": "Link"
   }
  ],
- "modified": "2026-07-29 23:32:46.200629",
+ "modified": "2026-07-30 11:31:19.593358",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "Legal",
- "number_cards": [
-  {
-   "label": "Total Contracts",
-   "number_card_name": "Total Contracts"
-  },
-  {
-   "label": "Completed Contracts",
-   "number_card_name": "Completed Contracts"
-  },
-  {
-   "label": "Pending Execution",
-   "number_card_name": "Pending Contracts"
-  },
-  {
-   "label": "Active Contracts",
-   "number_card_name": "Active Contracts"
-  },
-  {
-   "label": "Expired , Contiuing Contracts",
-   "number_card_name": "Expired Contracts"
-  },
-  {
-   "label": "Terminated Contracts",
-   "number_card_name": "Terminated Contracts"
-  }
- ],
+ "number_cards": [],
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,

@@ -21,6 +21,11 @@ STATE_COLORS = {
 	"Expired – Services Continuing": "red",
 	"Closed": "blue",
 }
+HEALTH_COLORS = {
+	"Healthy": "green",
+	"Attention Needed": "orange",
+	"Critical": "red",
+}
 
 
 def _require_contract_read_permission():
@@ -42,6 +47,8 @@ def _contract_fields():
 		"sf_signed_contract_document",
 		"sf_completion_date",
 		"sf_termination_date",
+		"sf_contract_health_score",
+		"sf_contract_health_reason",
 		"modified",
 		"creation",
 	]
@@ -74,6 +81,9 @@ def _serialize_contract(contract):
 		"signed_document": contract.get("sf_signed_contract_document"),
 		"completion_date": contract.get("sf_completion_date"),
 		"termination_date": contract.get("sf_termination_date"),
+		"health_score": contract.get("sf_contract_health_score") or "Attention Needed",
+		"health_reason": contract.get("sf_contract_health_reason"),
+		"health_color": HEALTH_COLORS.get(contract.get("sf_contract_health_score"), "orange"),
 		"days_to_end": _days_until(contract.end_date),
 		"days_open": _days_open(contract.creation),
 		"modified": contract.modified,
@@ -113,6 +123,112 @@ def _build_state_cards():
 	]
 
 
+def _build_health_distribution():
+	health_order = ("Critical", "Attention Needed", "Healthy")
+	return [
+		{
+			"label": health,
+			"count": frappe.db.count("Contract", {"sf_contract_health_score": health}),
+			"color": HEALTH_COLORS.get(health, "gray"),
+		}
+		for health in health_order
+	]
+
+
+def _build_lifecycle_distribution(cards):
+	total = sum(card["count"] for card in cards) or 1
+	return [
+		{
+			"status": card["status"],
+			"label": card["status"],
+			"count": card["count"],
+			"color": card["color"],
+			"percentage": round((card["count"] / total) * 100),
+		}
+		for card in cards
+	]
+
+
+def _build_expiry_buckets():
+	today = getdate(nowdate())
+	buckets = {
+		"Expired": {"label": "Expired", "count": 0, "color": "red", "range": "Past end date"},
+		"0-30": {"label": "0-30 Days", "count": 0, "color": "red", "range": "Immediate action"},
+		"31-60": {"label": "31-60 Days", "count": 0, "color": "orange", "range": "Prepare renewal"},
+		"61-90": {"label": "61-90 Days", "count": 0, "color": "blue", "range": "Upcoming"},
+	}
+	contracts = frappe.get_list(
+		"Contract",
+		fields=["name", "end_date", "sf_contract_lifecycle_status"],
+		filters={"end_date": ["is", "set"]},
+		limit_page_length=500,
+	)
+
+	for contract in contracts:
+		if contract.get("sf_contract_lifecycle_status") in ("Closed", "Terminated"):
+			continue
+
+		days = date_diff(getdate(contract.end_date), today)
+
+		if days < 0:
+			buckets["Expired"]["count"] += 1
+		elif days <= 30:
+			buckets["0-30"]["count"] += 1
+		elif days <= 60:
+			buckets["31-60"]["count"] += 1
+		elif days <= 90:
+			buckets["61-90"]["count"] += 1
+
+	return list(buckets.values())
+
+
+def _build_compliance_heatmap():
+	rows = []
+	trackers = frappe.get_list(
+		"Contract Compliance Tracker",
+		fields=[
+			"name",
+			"contract",
+			"contractor",
+			"contract_type",
+			"compliance_percentage",
+		],
+		order_by="modified desc",
+		limit_page_length=12,
+	)
+
+	for tracker in trackers:
+		percentage = round(float(tracker.compliance_percentage or 0))
+		if percentage >= 90:
+			color = "green"
+		elif percentage >= 70:
+			color = "orange"
+		else:
+			color = "red"
+
+		rows.append(
+			{
+				"name": tracker.name,
+				"contract": tracker.contract,
+				"contractor": tracker.contractor or "Not Set",
+				"contract_type": tracker.contract_type or "Not Set",
+				"percentage": percentage,
+				"color": color,
+			}
+		)
+
+	return rows
+
+
+def _build_visualizations(cards):
+	return {
+		"health_distribution": _build_health_distribution(),
+		"lifecycle_distribution": _build_lifecycle_distribution(cards),
+		"expiry_buckets": _build_expiry_buckets(),
+		"compliance_heatmap": _build_compliance_heatmap(),
+	}
+
+
 def _build_watchlists():
 	today = getdate(nowdate())
 	expiry_cutoff = add_days(today, 90)
@@ -142,8 +258,14 @@ def _build_watchlists():
 		order_by="creation asc",
 		limit_page_length=12,
 	)
+	contract_health = _get_contracts(
+		filters={"sf_contract_health_score": ["in", ["Critical", "Attention Needed"]]},
+		order_by="modified desc",
+		limit_page_length=12,
+	)
 
 	return {
+		"contract_health": contract_health,
 		"expiring_soon": expiring_soon,
 		"near_completion": near_completion,
 		"unsigned_pending": unsigned_pending,
@@ -157,6 +279,13 @@ def _build_predictor_summary(watchlists, cards):
 	)
 
 	return [
+		{
+			"label": "Critical contracts",
+			"value": frappe.db.count("Contract", {"sf_contract_health_score": "Critical"}),
+			"indicator": "red"
+			if frappe.db.count("Contract", {"sf_contract_health_score": "Critical"})
+			else "green",
+		},
 		{
 			"label": "Contracts expiring in 90 days",
 			"value": len(watchlists["expiring_soon"]),
@@ -191,5 +320,6 @@ def get_contract_dashboard():
 		"cards": cards,
 		"watchlists": watchlists,
 		"predictor": _build_predictor_summary(watchlists, cards),
+		"visualizations": _build_visualizations(cards),
 		"generated_on": nowdate(),
 	}

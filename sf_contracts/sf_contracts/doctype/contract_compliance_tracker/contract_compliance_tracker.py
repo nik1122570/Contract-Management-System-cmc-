@@ -8,7 +8,57 @@ from frappe.model.document import Document
 
 class ContractComplianceTracker(Document):
 	def validate(self):
+		self.sync_contract_fields()
+		self.set_compliance_percentage()
 		self.validate_empty_obligation_rows()
+
+	def on_update(self):
+		if self.contract:
+			from sf_contracts.contract_lifecycle import update_contract_health_score_in_db
+
+			update_contract_health_score_in_db(self.contract)
+
+	def sync_contract_fields(self):
+		if not self.contract:
+			return
+
+		contract_values = frappe.db.get_value(
+			"Contract",
+			self.contract,
+			["sf_contract_type", "sf_contractor"],
+			as_dict=True,
+		)
+
+		if not contract_values:
+			return
+
+		self.contract_type = contract_values.get("sf_contract_type")
+		self.contractor = contract_values.get("sf_contractor")
+
+	def set_compliance_percentage(self):
+		table_fields = ("table_ewpx", "table_jpcz", "table_dhlt", "table_mmyd")
+		total = 0
+		compliant = 0
+
+		for fieldname in table_fields:
+			for row in self.get(fieldname) or []:
+				total += 1
+
+				if self.get_compliance_status_class(row.get("compliance_status")) == "compliant":
+					compliant += 1
+
+		self.compliance_percentage = round((compliant / total) * 100) if total else 0
+
+	def get_compliance_status_class(self, value):
+		normalized = " ".join((value or "").lower().split())
+
+		if normalized == "compliant":
+			return "compliant"
+
+		if normalized in ("non- compliant", "non-compliant"):
+			return "non-compliant"
+
+		return "pending"
 
 	def validate_empty_obligation_rows(self):
 		table_fields = (

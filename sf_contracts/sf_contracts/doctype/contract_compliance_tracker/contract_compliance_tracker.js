@@ -6,6 +6,7 @@ frappe.ui.form.on("Contract Compliance Tracker", {
 	refresh(frm) {
 		install_compliance_status_formatters(frm);
 		render_compliance_dashboard(frm);
+		render_header_compliance_indicator(frm);
 		refresh_compliance_status_indicators(frm);
 
 		if (frm.doc.contract) {
@@ -19,8 +20,13 @@ frappe.ui.form.on("Contract Compliance Tracker", {
 		validate_empty_obligation_rows(frm);
 	},
 
+	contract(frm) {
+		sync_contract_fields(frm);
+	},
+
 	onload_post_render(frm) {
 		render_compliance_dashboard(frm);
+		render_header_compliance_indicator(frm);
 		refresh_compliance_status_indicators(frm);
 	},
 
@@ -33,6 +39,29 @@ frappe.ui.form.on("Contract Compliance Tracker", {
 	table_mmyd_add: update_compliance_visuals,
 	table_mmyd_remove: update_compliance_visuals,
 });
+
+function sync_contract_fields(frm) {
+	if (!frm.doc.contract) {
+		frm.set_value({
+			contract_type: "",
+			contractor: "",
+		});
+		return;
+	}
+
+	frappe.db
+		.get_value("Contract", frm.doc.contract, ["sf_contract_type", "sf_contractor"])
+		.then(({ message }) => {
+			if (!message) {
+				return;
+			}
+
+			frm.set_value({
+				contract_type: message.sf_contract_type || "",
+				contractor: message.sf_contractor || "",
+			});
+		});
+}
 
 frappe.ui.form.on("Contract Table 1", {
 	compliance_status(frm) {
@@ -79,6 +108,7 @@ const compliance_table_fields = [
 
 function update_compliance_visuals(frm) {
 	render_compliance_dashboard(frm);
+	render_header_compliance_indicator(frm);
 	refresh_compliance_status_indicators(frm);
 }
 
@@ -153,6 +183,25 @@ function render_compliance_dashboard(frm) {
 
 	const summary = get_compliance_summary(frm);
 	dashboard.$wrapper.html(get_compliance_dashboard_html(summary));
+}
+
+function render_header_compliance_indicator(frm) {
+	const summary = get_compliance_summary(frm);
+
+	if (!summary.total) {
+		frm.page.set_indicator(__("No Obligations"), "gray");
+		return;
+	}
+
+	let color = "green";
+
+	if (summary.non_compliant) {
+		color = "red";
+	} else if (summary.pending) {
+		color = "orange";
+	}
+
+	frm.page.set_indicator(__("{0}% Compliant", [summary.percentage]), color);
 }
 
 function get_compliance_summary(frm) {

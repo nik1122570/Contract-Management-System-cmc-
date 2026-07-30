@@ -13,7 +13,7 @@
  "is_standard": 1,
  "label": "Expired Services Continuing",
  "method": "sf_contracts.contract_number_cards.expired_contracts",
- "modified": "2026-07-29 23:23:40.445242",
+ "modified": "2026-07-30 11:31:19.530143",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "Expired Contracts",

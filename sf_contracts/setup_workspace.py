@@ -51,6 +51,27 @@ CONTRACT_NUMBER_CARDS = [
 		"color": "#005aa8",
 		"background_color": "#eaf4ff",
 	},
+	{
+		"name": "Critical Contracts",
+		"status": "Critical",
+		"method": "sf_contracts.contract_number_cards.critical_contracts",
+		"color": "#b42318",
+		"background_color": "#fff0f0",
+	},
+	{
+		"name": "Attention Needed Contracts",
+		"status": "Attention Needed",
+		"method": "sf_contracts.contract_number_cards.attention_needed_contracts",
+		"color": "#b76b00",
+		"background_color": "#fff8e8",
+	},
+	{
+		"name": "Healthy Contracts",
+		"status": "Healthy",
+		"method": "sf_contracts.contract_number_cards.healthy_contracts",
+		"color": "#08763d",
+		"background_color": "#edf9f2",
+	},
 ]
 
 
@@ -60,25 +81,41 @@ def get_dashboard_block_html():
 	<div class="sfw-hero">
 		<div>
 			<div class="sfw-eyebrow">SF Group of Companies Ltd</div>
-			<div class="sfw-title">Contract Management Dashboard</div>
-			<div class="sfw-subtitle">Track contract lifecycle, pending execution, expiry risk, and Legal action items.</div>
+			<div class="sfw-title">Legal Contract Command Center</div>
+			<div class="sfw-subtitle">Visual oversight for contract health, lifecycle movement, expiry risk, and urgent Legal actions.</div>
 		</div>
 		<button class="sfw-new-contract">New Contract</button>
 	</div>
-	<div class="sfw-cards"></div>
-	<div class="sfw-expanded"></div>
+	<div class="sfw-visual-grid">
+		<div class="sfw-panel sfw-panel-health">
+			<div class="sfw-panel-title">Contract Health</div>
+			<div class="sfw-health-visual"></div>
+		</div>
+		<div class="sfw-panel sfw-panel-funnel">
+			<div class="sfw-panel-title">Lifecycle Funnel</div>
+			<div class="sfw-lifecycle-funnel"></div>
+		</div>
+		<div class="sfw-panel sfw-panel-expiry">
+			<div class="sfw-panel-title">Expiry Timeline</div>
+			<div class="sfw-expiry-timeline"></div>
+		</div>
+		<div class="sfw-panel sfw-panel-actions">
+			<div class="sfw-panel-title">Action Queue</div>
+			<div data-watchlist="contract_health"></div>
+		</div>
+		<div class="sfw-panel sfw-panel-compliance">
+			<div class="sfw-panel-title">Compliance Heatmap</div>
+			<div class="sfw-compliance-heatmap"></div>
+		</div>
+		<div class="sfw-panel sfw-panel-expiring">
+			<div class="sfw-panel-title">Contracts Near Expiration</div>
+			<div data-watchlist="expiring_soon"></div>
+		</div>
+	</div>
 	<div class="sfw-grid">
 		<div class="sfw-panel">
 			<div class="sfw-panel-title">Lifecycle Predictor</div>
 			<div class="sfw-predictor"></div>
-		</div>
-		<div class="sfw-panel">
-			<div class="sfw-panel-title">Contracts Near Expiration</div>
-			<div data-watchlist="expiring_soon"></div>
-		</div>
-		<div class="sfw-panel">
-			<div class="sfw-panel-title">Contracts Near Completion</div>
-			<div data-watchlist="near_completion"></div>
 		</div>
 		<div class="sfw-panel">
 			<div class="sfw-panel-title">Unsigned / Pending Contracts</div>
@@ -208,6 +245,22 @@ def get_dashboard_block_style():
 	gap: 12px;
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+.sfw-visual-grid {
+	display: grid;
+	gap: 12px;
+	grid-template-columns: 1.05fr 1.45fr;
+	margin-bottom: 12px;
+}
+.sfw-panel-health,
+.sfw-panel-expiry {
+	min-height: 280px;
+}
+.sfw-panel-funnel,
+.sfw-panel-actions,
+.sfw-panel-compliance,
+.sfw-panel-expiring {
+	min-height: 280px;
+}
 .sfw-panel {
 	background: #fff;
 	border: 1px solid var(--sf-line);
@@ -227,6 +280,171 @@ def get_dashboard_block_style():
 	font-weight: 800;
 	margin-bottom: 10px;
 }
+.sfw-health-visual {
+	align-items: center;
+	display: grid;
+	gap: 18px;
+	grid-template-columns: auto minmax(0, 1fr);
+	min-height: 220px;
+}
+.sfw-donut {
+	align-items: center;
+	background: conic-gradient(#eaecf0 0deg 360deg);
+	border-radius: 50%;
+	display: flex;
+	height: 172px;
+	justify-content: center;
+	position: relative;
+	width: 172px;
+}
+.sfw-donut::after {
+	background: #fff;
+	border-radius: 50%;
+	content: "";
+	height: 112px;
+	position: absolute;
+	width: 112px;
+}
+.sfw-donut-center {
+	color: var(--sf-ink);
+	display: grid;
+	font-size: 12px;
+	font-weight: 700;
+	justify-items: center;
+	position: relative;
+	z-index: 1;
+}
+.sfw-donut-center strong {
+	color: var(--sf-blue-dark);
+	font-size: 28px;
+	line-height: 1;
+}
+.sfw-legend {
+	display: grid;
+	gap: 10px;
+}
+.sfw-legend-row {
+	align-items: center;
+	display: grid;
+	gap: 8px;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+}
+.sfw-dot {
+	border-radius: 50%;
+	height: 10px;
+	width: 10px;
+}
+.sfw-dot.green { background: #08763d; }
+.sfw-dot.orange { background: #b76b00; }
+.sfw-dot.red { background: #b42318; }
+.sfw-dot.blue { background: #005aa8; }
+.sfw-dot.gray { background: #4b5563; }
+.sfw-funnel {
+	display: grid;
+	gap: 9px;
+}
+.sfw-funnel-row {
+	background: transparent;
+	border: 0;
+	cursor: pointer;
+	display: grid;
+	gap: 6px;
+	padding: 0;
+	text-align: left;
+	width: 100%;
+}
+.sfw-funnel-label {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+}
+.sfw-funnel-track {
+	background: #eef4fb;
+	border-radius: 999px;
+	height: 14px;
+	overflow: hidden;
+}
+.sfw-funnel-bar {
+	border-radius: inherit;
+	height: 100%;
+	min-width: 8px;
+	transition: width .25s ease;
+}
+.sfw-funnel-bar.green { background: #08763d; }
+.sfw-funnel-bar.orange { background: #b76b00; }
+.sfw-funnel-bar.red { background: #b42318; }
+.sfw-funnel-bar.blue { background: #005aa8; }
+.sfw-funnel-bar.gray { background: #667085; }
+.sfw-expiry-timeline {
+	display: grid;
+	gap: 12px;
+}
+.sfw-expiry-band {
+	background: #f8fbff;
+	border: 1px solid #edf4fb;
+	border-radius: 8px;
+	padding: 10px 12px;
+}
+.sfw-expiry-band-head {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 8px;
+}
+.sfw-expiry-track {
+	background: #e8eef6;
+	border-radius: 999px;
+	height: 10px;
+	overflow: hidden;
+}
+.sfw-expiry-fill {
+	border-radius: inherit;
+	height: 100%;
+	min-width: 5px;
+}
+.sfw-expiry-fill.green { background: #08763d; }
+.sfw-expiry-fill.orange { background: #b76b00; }
+.sfw-expiry-fill.red { background: #b42318; }
+.sfw-expiry-fill.blue { background: #005aa8; }
+.sfw-expiry-fill.gray { background: #667085; }
+.sfw-heatmap {
+	display: grid;
+	gap: 8px;
+}
+.sfw-heatmap-row {
+	align-items: center;
+	background: #f8fbff;
+	border: 1px solid #edf4fb;
+	border-radius: 8px;
+	cursor: pointer;
+	display: grid;
+	gap: 10px;
+	grid-template-columns: minmax(0, 1.2fr) minmax(0, .9fr) auto;
+	padding: 10px 12px;
+	text-align: left;
+	width: 100%;
+}
+.sfw-heatmap-row:hover {
+	background: #fff;
+	border-color: rgba(0,90,168,.28);
+}
+.sfw-heatmap-main,
+.sfw-heatmap-meta {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.sfw-heatmap-score {
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 800;
+	min-width: 54px;
+	padding: 4px 8px;
+	text-align: center;
+}
+.sfw-heatmap-score.green { background: #e7f7ee; color: #08763d; }
+.sfw-heatmap-score.orange { background: #fff4df; color: #9a5b00; }
+.sfw-heatmap-score.red { background: #ffe9e9; color: #b42318; }
 .sfw-list {
 	display: grid;
 	gap: 8px;
@@ -303,11 +521,13 @@ def get_dashboard_block_style():
 .text-blue { color: #005aa8; }
 .text-gray { color: #4b5563; }
 @media (max-width: 991px) {
+	.sfw-visual-grid,
 	.sfw-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 575px) {
 	.sfw-hero,
-	.sfw-row {
+	.sfw-row,
+	.sfw-health-visual {
 		align-items: flex-start;
 		grid-template-columns: 1fr;
 	}
@@ -328,14 +548,141 @@ let dashboardData = null;
 let activeStatus = null;
 
 function escapeHTML(value) {
-	return frappe.utils.escape_html(value || "");
+	return frappe.utils.escape_html(String(value ?? ""));
 }
 
 function render() {
-	renderCards(dashboardData.cards || []);
-	renderExpanded(activeStatus || (dashboardData.cards || [])[0]?.status);
+	renderVisualizations(dashboardData.visualizations || {});
 	renderPredictor(dashboardData.predictor || []);
 	renderWatchlists(dashboardData.watchlists || {});
+}
+
+function renderVisualizations(visualizations) {
+	renderHealthDonut(visualizations.health_distribution || []);
+	renderLifecycleFunnel(visualizations.lifecycle_distribution || []);
+	renderExpiryTimeline(visualizations.expiry_buckets || []);
+	renderComplianceHeatmap(visualizations.compliance_heatmap || []);
+}
+
+function getVisualColor(color) {
+	return {
+		green: "#08763d",
+		orange: "#b76b00",
+		red: "#b42318",
+		blue: "#005aa8",
+		gray: "#667085",
+	}[color || "gray"] || "#667085";
+}
+
+function renderHealthDonut(items) {
+	const $target = $root.find(".sfw-health-visual").empty();
+	const total = items.reduce((sum, item) => sum + cint(item.count), 0);
+	let angle = 0;
+	const segments = [];
+
+	items.forEach((item) => {
+		const degrees = total ? (cint(item.count) / total) * 360 : 0;
+		segments.push(`${getVisualColor(item.color)} ${angle}deg ${angle + degrees}deg`);
+		angle += degrees;
+	});
+
+	const background = segments.length && total ? `conic-gradient(${segments.join(", ")})` : "";
+	const $donut = $(`
+		<div class="sfw-donut" style="${background ? `background:${background}` : ""}">
+			<div class="sfw-donut-center">
+				<strong>${total}</strong>
+				<span>Total</span>
+			</div>
+		</div>
+	`);
+	const $legend = $('<div class="sfw-legend"></div>');
+
+	items.forEach((item) => {
+		$legend.append(`
+			<div class="sfw-legend-row">
+				<span class="sfw-dot ${item.color || "gray"}"></span>
+				<span>${escapeHTML(item.label)}</span>
+				<strong class="text-${item.color || "gray"}">${cint(item.count)}</strong>
+			</div>
+		`);
+	});
+
+	$target.append($donut, $legend);
+}
+
+function renderLifecycleFunnel(items) {
+	const $target = $root.find(".sfw-lifecycle-funnel").empty();
+	const maxCount = Math.max(...items.map((item) => cint(item.count)), 1);
+
+	items.forEach((item) => {
+		const width = Math.max((cint(item.count) / maxCount) * 100, item.count ? 8 : 0);
+		const $row = $(`
+			<button class="sfw-funnel-row" data-status="${escapeHTML(item.status)}">
+				<span class="sfw-funnel-label">
+					<span>${escapeHTML(item.label)}</span>
+					<strong class="text-${item.color || "gray"}">${cint(item.count)}</strong>
+				</span>
+				<span class="sfw-funnel-track">
+					<span class="sfw-funnel-bar ${item.color || "gray"}" style="width:${width}%"></span>
+				</span>
+			</button>
+		`);
+		$row.on("click", () => {
+			frappe.route_options = { sf_contract_lifecycle_status: item.status };
+			frappe.set_route("List", "Contract");
+		});
+		$target.append($row);
+	});
+}
+
+function renderExpiryTimeline(items) {
+	const $target = $root.find(".sfw-expiry-timeline").empty();
+	const maxCount = Math.max(...items.map((item) => cint(item.count)), 1);
+
+	items.forEach((item) => {
+		const width = Math.max((cint(item.count) / maxCount) * 100, item.count ? 8 : 0);
+		$target.append(`
+			<div class="sfw-expiry-band">
+				<div class="sfw-expiry-band-head">
+					<div>
+						<strong>${escapeHTML(item.label)}</strong>
+						<div class="text-muted">${escapeHTML(item.range)}</div>
+					</div>
+					<strong class="text-${item.color || "gray"}">${cint(item.count)}</strong>
+				</div>
+				<div class="sfw-expiry-track">
+					<div class="sfw-expiry-fill ${item.color || "gray"}" style="width:${width}%"></div>
+				</div>
+			</div>
+		`);
+	});
+}
+
+function renderComplianceHeatmap(items) {
+	const $target = $root.find(".sfw-compliance-heatmap").empty();
+	const $list = $('<div class="sfw-heatmap"></div>');
+
+	if (!items.length) {
+		$target.html(`<div class="sfw-empty">No compliance tracker records found.</div>`);
+		return;
+	}
+
+	items.forEach((item) => {
+		const $row = $(`
+			<button class="sfw-heatmap-row" data-tracker="${escapeHTML(item.name)}">
+				<span class="sfw-heatmap-main">
+					<strong>${escapeHTML(item.contractor)}</strong>
+					<span class="text-muted">${escapeHTML(item.contract)}</span>
+				</span>
+				<span class="sfw-heatmap-meta">${escapeHTML(item.contract_type)}</span>
+				<span class="sfw-heatmap-score ${item.color || "gray"}">${cint(item.percentage)}%</span>
+			</button>
+		`);
+		$row.on("click", () => frappe.set_route("Form", "Contract Compliance Tracker", item.name));
+		$list.append($row);
+	});
+
+	$target.append($list);
 }
 
 function renderCards(cards) {
@@ -392,12 +739,13 @@ function renderPredictor(items) {
 }
 
 function renderWatchlists(watchlists) {
+	renderContractList($root.find('[data-watchlist="contract_health"]'), watchlists.contract_health || [], "No critical or attention-needed contracts.", null, false, true);
 	renderContractList($root.find('[data-watchlist="expiring_soon"]'), watchlists.expiring_soon || [], "No active contracts expiring in the next 90 days.", "days left");
 	renderContractList($root.find('[data-watchlist="near_completion"]'), watchlists.near_completion || [], "No active contracts ending in the next 30 days.", "days left");
 	renderContractList($root.find('[data-watchlist="unsigned_pending"]'), watchlists.unsigned_pending || [], "No unsigned pending contracts.", "days pending", true);
 }
 
-function renderContractList($target, contracts, emptyMessage, daysLabel, useDaysOpen) {
+function renderContractList($target, contracts, emptyMessage, daysLabel, useDaysOpen, showHealthReason) {
 	$target.empty();
 	if (!contracts.length) {
 		$target.append(`<div class="sfw-empty">${escapeHTML(emptyMessage)}</div>`);
@@ -406,15 +754,17 @@ function renderContractList($target, contracts, emptyMessage, daysLabel, useDays
 	contracts.forEach((contract) => {
 		const days = useDaysOpen ? contract.days_open : contract.days_to_end;
 		const daysText = daysLabel && days !== null && days !== undefined ? `${days} ${daysLabel}` : "";
-		const color = contract.status_color || "gray";
+		const color = showHealthReason ? contract.health_color || "gray" : contract.status_color || "gray";
+		const pillText = showHealthReason ? contract.health_score || "Attention Needed" : contract.lifecycle_status;
+		const reasonText = showHealthReason ? contract.health_reason || "" : "";
 		const $row = $(`
 			<button class="sfw-row" data-contract="${escapeHTML(contract.name)}">
 				<span>
 					<strong>${escapeHTML(contract.party || contract.name)}</strong>
-					<span class="text-muted">${escapeHTML(contract.name)}</span>
+					<span class="text-muted">${escapeHTML(reasonText || contract.name)}</span>
 				</span>
 				<span class="sfw-row-meta">
-					<span class="sfw-pill ${color}">${escapeHTML(contract.lifecycle_status)}</span>
+					<span class="sfw-pill ${color}">${escapeHTML(pillText)}</span>
 					${daysText ? `<span>${escapeHTML(daysText)}</span>` : ""}
 				</span>
 			</button>
@@ -478,15 +828,44 @@ def create_contract_number_cards():
 def update_legal_workspace():
 	workspace = frappe.get_doc("Workspace", "Legal")
 	workspace.custom_blocks = []
+	workspace.append(
+		"custom_blocks",
+		{
+			"custom_block_name": DASHBOARD_BLOCK,
+			"label": "Contract Management Dashboard",
+		},
+	)
 	workspace.number_cards = []
-	for card_config in CONTRACT_NUMBER_CARDS:
-		workspace.append(
-			"number_cards",
-			{
-				"number_card_name": card_config["name"],
-				"label": card_config.get("label") or card_config["name"],
-			},
-		)
+	workspace.links = []
+	for link in [
+		{
+			"type": "Card Break",
+			"label": "Records",
+			"onboard": 0,
+		},
+		{
+			"type": "Link",
+			"label": "Contract",
+			"link_type": "DocType",
+			"link_to": "Contract",
+			"onboard": 1,
+		},
+		{
+			"type": "Link",
+			"label": "Contract Compliance Tracker",
+			"link_type": "DocType",
+			"link_to": "Contract Compliance Tracker",
+			"onboard": 1,
+		},
+		{
+			"type": "Link",
+			"label": "Contract Template",
+			"link_type": "DocType",
+			"link_to": "Contract Template",
+			"onboard": 0,
+		},
+	]:
+		workspace.append("links", link)
 
 	workspace.shortcuts = []
 	for shortcut in [
@@ -521,34 +900,9 @@ def update_legal_workspace():
 				"data": {"text": '<span class="h4"><b>Contract Management Dashboard</b></span>', "col": 12},
 			},
 			{
-				"id": "sfcm_total_contracts_card",
-				"type": "number_card",
-				"data": {"number_card_name": "Total Contracts", "col": 2},
-			},
-			{
-				"id": "sfcm_pending_contracts_card",
-				"type": "number_card",
-				"data": {"number_card_name": "Pending Contracts", "col": 2},
-			},
-			{
-				"id": "sfcm_active_contracts_card",
-				"type": "number_card",
-				"data": {"number_card_name": "Active Contracts", "col": 2},
-			},
-			{
-				"id": "sfcm_terminated_contracts_card",
-				"type": "number_card",
-				"data": {"number_card_name": "Terminated Contracts", "col": 2},
-			},
-			{
-				"id": "sfcm_expired_contracts_card",
-				"type": "number_card",
-				"data": {"number_card_name": "Expired Contracts", "col": 2},
-			},
-			{
-				"id": "sfcm_completed_contracts_card",
-				"type": "number_card",
-				"data": {"number_card_name": "Completed Contracts", "col": 2},
+				"id": "sfcm_custom_dashboard",
+				"type": "custom_block",
+				"data": {"custom_block_name": DASHBOARD_BLOCK, "col": 12},
 			},
 			{"id": "sfcm_spacer_1", "type": "spacer", "data": {"col": 12}},
 			{

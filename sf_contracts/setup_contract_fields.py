@@ -145,6 +145,41 @@ def add_contract_business_fields():
 	frappe.clear_cache(doctype="Contract")
 
 
+def add_contract_health_fields():
+	"""Add a management-facing health indicator to ERPNext Contract."""
+	custom_fields = {
+		"Contract": [
+			{
+				"fieldname": "sf_contract_health_score",
+				"label": "Contract Health Score",
+				"fieldtype": "Select",
+				"options": "Healthy\nAttention Needed\nCritical",
+				"default": "Attention Needed",
+				"insert_after": "sf_contract_lifecycle_status",
+				"read_only": 1,
+				"allow_on_submit": 1,
+				"in_list_view": 1,
+				"in_standard_filter": 1,
+				"no_copy": 1,
+				"description": "Management traffic-light indicator calculated from signature, lifecycle, expiry, and compliance.",
+			},
+			{
+				"fieldname": "sf_contract_health_reason",
+				"label": "Contract Health Reason",
+				"fieldtype": "Small Text",
+				"insert_after": "sf_contract_health_score",
+				"read_only": 1,
+				"allow_on_submit": 1,
+				"no_copy": 1,
+				"description": "Main reason behind the calculated Contract Health Score.",
+			},
+		]
+	}
+
+	create_custom_fields(custom_fields, update=True)
+	frappe.clear_cache(doctype="Contract")
+
+
 def add_contract_compliance_link_field():
 	"""Add the Contract Compliance Tracker link to ERPNext Contract."""
 	custom_fields = {
@@ -192,6 +227,8 @@ def sync_contract_field_order():
 	move_after("sf_contractor", "party_name")
 	move_after("sf_contract_type", "sf_contractor")
 	move_after("sf_subsidiary_signee", "signee")
+	move_after("sf_contract_health_score", "sf_contract_lifecycle_status")
+	move_after("sf_contract_health_reason", "sf_contract_health_score")
 	move_after("sf_compliance_section", "requires_fulfilment")
 	move_after("sf_compliance_tracker", "sf_compliance_section")
 
@@ -211,5 +248,6 @@ def setup_contract_customizations():
 	add_signed_contract_document_field()
 	add_contract_lifecycle_fields()
 	add_contract_business_fields()
+	add_contract_health_fields()
 	add_contract_compliance_link_field()
 	sync_contract_field_order()
