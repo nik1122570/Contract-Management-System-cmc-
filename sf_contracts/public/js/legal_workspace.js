@@ -79,7 +79,7 @@
 					<div>
 						<div class="sfw-eyebrow">SF Group of Companies Ltd</div>
 						<div class="sfw-title">Legal Contract Command Center</div>
-						<div class="sfw-subtitle">Visual oversight for contract health, lifecycle movement, expiry risk, compliance, and urgent Legal actions.</div>
+						<div class="sfw-subtitle">Visual oversight for contract health, lifecycle movement, expiry risk, and urgent Legal actions.</div>
 					</div>
 					<button class="sfw-new-contract">New Contract</button>
 				</div>
@@ -101,21 +101,9 @@
 						<div class="sfw-panel-title">Action Queue</div>
 						<div data-watchlist="contract_health"></div>
 					</div>
-					<div class="sfw-panel">
-						<div class="sfw-panel-title">Compliance Heatmap</div>
-						<div class="sfw-compliance-heatmap"></div>
-					</div>
-					<div class="sfw-panel">
-						<div class="sfw-panel-title">Contracts Near Expiration</div>
-						<div data-watchlist="expiring_soon"></div>
-					</div>
 				</div>
 
 				<div class="sfw-grid">
-					<div class="sfw-panel">
-						<div class="sfw-panel-title">Lifecycle Predictor</div>
-						<div class="sfw-predictor"></div>
-					</div>
 					<div class="sfw-panel">
 						<div class="sfw-panel-title">Unsigned / Pending Contracts</div>
 						<div data-watchlist="unsigned_pending"></div>
@@ -130,21 +118,13 @@
 		render_health_donut(visualizations.health_distribution || []);
 		render_lifecycle_funnel(visualizations.lifecycle_distribution || []);
 		render_expiry_timeline(visualizations.expiry_buckets || []);
-		render_compliance_heatmap(visualizations.compliance_heatmap || []);
-		render_predictor(data.predictor || []);
 		render_contract_list(
 			$('[data-watchlist="contract_health"]'),
 			(data.watchlists || {}).contract_health || [],
-			"No critical or attention-needed contracts.",
+			"No critical contracts.",
 			null,
 			false,
 			true
-		);
-		render_contract_list(
-			$('[data-watchlist="expiring_soon"]'),
-			(data.watchlists || {}).expiring_soon || [],
-			"No active contracts expiring in the next 90 days.",
-			"days left"
 		);
 		render_contract_list(
 			$('[data-watchlist="unsigned_pending"]'),
@@ -356,7 +336,7 @@
 			#${DASHBOARD_ID} .sfw-funnel-label { align-items: center; display: flex; justify-content: space-between; }
 			#${DASHBOARD_ID} .sfw-funnel-track, #${DASHBOARD_ID} .sfw-expiry-track { background: #eef4fb; border-radius: 999px; height: 12px; overflow: hidden; }
 			#${DASHBOARD_ID} .sfw-funnel-bar, #${DASHBOARD_ID} .sfw-expiry-fill { border-radius: inherit; display: block; height: 100%; }
-			#${DASHBOARD_ID} .sfw-expiry-timeline, #${DASHBOARD_ID} .sfw-compliance-heatmap, #${DASHBOARD_ID} .sfw-predictor { display: grid; gap: 8px; }
+			#${DASHBOARD_ID} .sfw-expiry-timeline { display: grid; gap: 8px; }
 			#${DASHBOARD_ID} .sfw-expiry-band { background: #f8fbff; border: 1px solid #edf4fb; border-radius: 8px; padding: 10px 12px; }
 			#${DASHBOARD_ID} .sfw-expiry-band-head { align-items: center; display: flex; justify-content: space-between; margin-bottom: 8px; }
 			#${DASHBOARD_ID} .sfw-row, #${DASHBOARD_ID} .sfw-heatmap-row { align-items: center; background: #f8fbff; border: 1px solid #edf4fb; border-radius: 8px; cursor: pointer; display: grid; gap: 10px; grid-template-columns: minmax(0,1fr) auto; padding: 10px 12px; text-align: left; width: 100%; }

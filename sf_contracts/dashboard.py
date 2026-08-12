@@ -259,7 +259,7 @@ def _build_watchlists():
 		limit_page_length=12,
 	)
 	contract_health = _get_contracts(
-		filters={"sf_contract_health_score": ["in", ["Critical", "Attention Needed"]]},
+		filters={"sf_contract_health_score": "Critical"},
 		order_by="modified desc",
 		limit_page_length=12,
 	)

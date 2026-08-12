@@ -103,20 +103,8 @@ def get_dashboard_block_html():
 			<div class="sfw-panel-title">Action Queue</div>
 			<div data-watchlist="contract_health"></div>
 		</div>
-		<div class="sfw-panel sfw-panel-compliance">
-			<div class="sfw-panel-title">Compliance Heatmap</div>
-			<div class="sfw-compliance-heatmap"></div>
-		</div>
-		<div class="sfw-panel sfw-panel-expiring">
-			<div class="sfw-panel-title">Contracts Near Expiration</div>
-			<div data-watchlist="expiring_soon"></div>
-		</div>
 	</div>
 	<div class="sfw-grid">
-		<div class="sfw-panel">
-			<div class="sfw-panel-title">Lifecycle Predictor</div>
-			<div class="sfw-predictor"></div>
-		</div>
 		<div class="sfw-panel">
 			<div class="sfw-panel-title">Unsigned / Pending Contracts</div>
 			<div data-watchlist="unsigned_pending"></div>
@@ -553,7 +541,6 @@ function escapeHTML(value) {
 
 function render() {
 	renderVisualizations(dashboardData.visualizations || {});
-	renderPredictor(dashboardData.predictor || []);
 	renderWatchlists(dashboardData.watchlists || {});
 }
 
@@ -561,7 +548,6 @@ function renderVisualizations(visualizations) {
 	renderHealthDonut(visualizations.health_distribution || []);
 	renderLifecycleFunnel(visualizations.lifecycle_distribution || []);
 	renderExpiryTimeline(visualizations.expiry_buckets || []);
-	renderComplianceHeatmap(visualizations.compliance_heatmap || []);
 }
 
 function getVisualColor(color) {
@@ -739,9 +725,7 @@ function renderPredictor(items) {
 }
 
 function renderWatchlists(watchlists) {
-	renderContractList($root.find('[data-watchlist="contract_health"]'), watchlists.contract_health || [], "No critical or attention-needed contracts.", null, false, true);
-	renderContractList($root.find('[data-watchlist="expiring_soon"]'), watchlists.expiring_soon || [], "No active contracts expiring in the next 90 days.", "days left");
-	renderContractList($root.find('[data-watchlist="near_completion"]'), watchlists.near_completion || [], "No active contracts ending in the next 30 days.", "days left");
+	renderContractList($root.find('[data-watchlist="contract_health"]'), watchlists.contract_health || [], "No critical contracts.", null, false, true);
 	renderContractList($root.find('[data-watchlist="unsigned_pending"]'), watchlists.unsigned_pending || [], "No unsigned pending contracts.", "days pending", true);
 }
 
