@@ -6,7 +6,9 @@ from frappe.utils import date_diff, getdate, nowdate
 FINAL_STATUSES = {"Closed", "Terminated"}
 MANUAL_STATUSES = FINAL_STATUSES | {"Expired – Services Continuing"}
 LEGACY_STATUS_MAP = {
-	"Pending": "Pending Execution",
+	"Pending": "Draft",
+	"Pending Execution": "Draft",
+	"Executed – Awaiting Commencement": "Draft",
 	"Expired": "Expired – Services Continuing",
 	"Completed": "Closed",
 }
@@ -46,7 +48,7 @@ def get_lifecycle_status(contract) -> str:
 		return "Draft"
 
 	if not contract.get("is_signed"):
-		return "Pending Execution"
+		return "Draft"
 
 	today = getdate(nowdate())
 	start_date = getdate(contract.start_date) if contract.get("start_date") else None
@@ -55,14 +57,12 @@ def get_lifecycle_status(contract) -> str:
 	if end_date and today > end_date:
 		return "Expired – Services Continuing"
 
-	if start_date and today < start_date:
-		return "Executed – Awaiting Commencement"
-
 	return "Active"
 
 
 def update_contract_lifecycle_status(doc, method=None):
 	set_submitted_for_signing_on_draft(doc)
+	set_requires_fulfilment_for_contract(doc)
 
 	if not hasattr(doc, "sf_contract_lifecycle_status"):
 		return
@@ -70,6 +70,13 @@ def update_contract_lifecycle_status(doc, method=None):
 	validate_signed_contract_document(doc)
 	doc.sf_contract_lifecycle_status = get_lifecycle_status(doc)
 	set_contract_health_score(doc)
+
+
+def set_requires_fulfilment_for_contract(doc):
+	if not hasattr(doc, "requires_fulfilment"):
+		return
+
+	doc.requires_fulfilment = 1
 
 
 def set_contract_health_score(doc):
@@ -104,7 +111,7 @@ def get_contract_health_score(contract) -> tuple[str, str]:
 	if compliance_percentage is not None and compliance_percentage < 70:
 		return "Critical", _("Compliance is only {0}%.").format(compliance_percentage)
 
-	if status in ("Draft", "Pending Execution"):
+	if status == "Draft":
 		return "Attention Needed", _("Contract is still pending execution.")
 
 	if contract.get("requires_fulfilment") and not contract.get("sf_compliance_tracker"):

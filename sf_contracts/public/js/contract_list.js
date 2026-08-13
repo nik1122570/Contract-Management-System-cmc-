@@ -1,9 +1,7 @@
-window.sfContractLifecycleColors = window.sfContractLifecycleColors || {
+﻿window.sfContractLifecycleColors = window.sfContractLifecycleColors || {
 	Draft: "gray",
-	"Pending Execution": "orange",
-	"Executed – Awaiting Commencement": "blue",
 	Active: "green",
-	"Expired – Services Continuing": "red",
+	"Expired \u2013 Services Continuing": "red",
 	Closed: "blue",
 	Terminated: "red",
 };

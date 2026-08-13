@@ -5,8 +5,6 @@ from frappe.utils import add_days, date_diff, getdate, nowdate
 
 STATE_ORDER = (
 	"Draft",
-	"Pending Execution",
-	"Executed – Awaiting Commencement",
 	"Active",
 	"Expired – Services Continuing",
 	"Closed",
@@ -14,8 +12,6 @@ STATE_ORDER = (
 )
 STATE_COLORS = {
 	"Draft": "gray",
-	"Pending Execution": "orange",
-	"Executed – Awaiting Commencement": "blue",
 	"Active": "green",
 	"Terminated": "red",
 	"Expired – Services Continuing": "red",
@@ -25,6 +21,12 @@ HEALTH_COLORS = {
 	"Healthy": "green",
 	"Attention Needed": "orange",
 	"Critical": "red",
+}
+COMPLIANCE_TRACKER_COLORS = {
+	"Compliant": "green",
+	"Attention Needed": "orange",
+	"Critical": "red",
+	"Not Evaluated": "gray",
 }
 
 
@@ -135,6 +137,59 @@ def _build_health_distribution():
 	]
 
 
+def _build_compliance_tracker_distribution():
+	if not frappe.has_permission("Contract Compliance Tracker", "read"):
+		return []
+
+	distribution = {
+		"Critical": 0,
+		"Attention Needed": 0,
+		"Compliant": 0,
+		"Not Evaluated": 0,
+	}
+	trackers = frappe.get_list(
+		"Contract Compliance Tracker",
+		fields=["name", "compliance_percentage"],
+		limit_page_length=500,
+	)
+
+	for tracker in trackers:
+		if tracker.compliance_percentage is None:
+			distribution["Not Evaluated"] += 1
+			continue
+
+		percentage = float(tracker.compliance_percentage or 0)
+		if percentage >= 100:
+			distribution["Compliant"] += 1
+		elif percentage >= 70:
+			distribution["Attention Needed"] += 1
+		else:
+			distribution["Critical"] += 1
+
+	return [
+		{
+			"label": label,
+			"count": count,
+			"color": COMPLIANCE_TRACKER_COLORS.get(label, "gray"),
+			"route_options": _get_compliance_tracker_route_options(label),
+		}
+		for label, count in distribution.items()
+	]
+
+
+def _get_compliance_tracker_route_options(label):
+	if label == "Compliant":
+		return {"compliance_percentage": [">=", 100]}
+	if label == "Attention Needed":
+		return {"compliance_percentage": ["between", [70, 99.99]]}
+	if label == "Critical":
+		return {"compliance_percentage": ["<", 70]}
+	if label == "Not Evaluated":
+		return {"compliance_percentage": ["is", "not set"]}
+
+	return {}
+
+
 def _build_lifecycle_distribution(cards):
 	total = sum(card["count"] for card in cards) or 1
 	return [
@@ -223,6 +278,7 @@ def _build_compliance_heatmap():
 def _build_visualizations(cards):
 	return {
 		"health_distribution": _build_health_distribution(),
+		"compliance_tracker_distribution": _build_compliance_tracker_distribution(),
 		"lifecycle_distribution": _build_lifecycle_distribution(cards),
 		"expiry_buckets": _build_expiry_buckets(),
 		"compliance_heatmap": _build_compliance_heatmap(),
@@ -252,7 +308,7 @@ def _build_watchlists():
 	)
 	unsigned_pending = _get_contracts(
 		filters={
-			"sf_contract_lifecycle_status": "Pending Execution",
+			"sf_contract_lifecycle_status": "Draft",
 			"is_signed": 0,
 		},
 		order_by="creation asc",

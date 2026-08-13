@@ -13,7 +13,7 @@
  "is_standard": 1,
  "label": "Total Contracts",
  "method": "sf_contracts.contract_number_cards.total_contracts",
- "modified": "2026-07-30 11:31:19.504409",
+ "modified": "2026-08-13 10:04:07.556989",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "Total Contracts",

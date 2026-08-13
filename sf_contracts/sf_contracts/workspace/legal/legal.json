@@ -1,10 +1,10 @@
 {
  "charts": [],
- "content": "[{\"id\": \"sfcm_header_dashboard\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Contract Management Dashboard</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_custom_dashboard\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"SF Contract Dashboard\", \"col\": 12}}, {\"id\": \"sfcm_spacer_1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"sfcm_header_shortcuts\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Shortcuts</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_contract_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Contract\", \"col\": 3}}, {\"id\": \"sfcm_compliance_tracker_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Compliance Tracker\", \"col\": 3}}, {\"id\": \"sfcm_spacer_2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"sfcm_header_records\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Records</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_card_records\", \"type\": \"card\", \"data\": {\"card_name\": \"Records\", \"col\": 4}}]",
+ "content": "[{\"id\": \"sfcm_header_dashboard\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Contract Management Dashboard</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_custom_dashboard\", \"type\": \"custom_block\", \"data\": {\"custom_block_name\": \"SF Legal Command Center\", \"col\": 12}}, {\"id\": \"sfcm_spacer_1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"sfcm_header_shortcuts\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Shortcuts</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_contract_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Contract\", \"col\": 3}}, {\"id\": \"sfcm_compliance_tracker_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Compliance Tracker\", \"col\": 3}}, {\"id\": \"sfcm_compliance_register_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Compliance Register\", \"col\": 3}}, {\"id\": \"sfcm_sf_companies_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SF Companies\", \"col\": 3}}, {\"id\": \"sfcm_spacer_2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"sfcm_header_records\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Records</b></span>\", \"col\": 12}}, {\"id\": \"sfcm_card_records\", \"type\": \"card\", \"data\": {\"card_name\": \"Records\", \"col\": 4}}]",
  "creation": "2026-07-13 00:00:00",
  "custom_blocks": [
   {
-   "custom_block_name": "SF Contract Dashboard",
+   "custom_block_name": "SF Legal Command Center",
    "label": "Contract Management Dashboard"
   }
  ],
@@ -49,6 +49,46 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Compliance Register",
+   "link_count": 0,
+   "link_to": "Compliance Register",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Compliance Category",
+   "link_count": 0,
+   "link_to": "Compliance Category",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Compliance Settings",
+   "link_count": 0,
+   "link_to": "Compliance Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "SF Companies",
+   "link_count": 0,
+   "link_to": "SF Companies",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Contract Template",
    "link_count": 0,
    "link_to": "Contract Template",
@@ -57,7 +97,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-07-30 11:31:19.593358",
+ "modified": "2026-08-13 10:04:08.061371",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "Legal",
@@ -87,6 +127,26 @@
    "icon": "review",
    "label": "Compliance Tracker",
    "link_to": "Contract Compliance Tracker",
+   "stats_filter": "{}",
+   "type": "DocType"
+  },
+  {
+   "color": "#005aa8",
+   "doc_view": "List",
+   "format": "{}",
+   "icon": "check-circle",
+   "label": "Compliance Register",
+   "link_to": "Compliance Register",
+   "stats_filter": "{}",
+   "type": "DocType"
+  },
+  {
+   "color": "#009847",
+   "doc_view": "List",
+   "format": "{}",
+   "icon": "organization",
+   "label": "SF Companies",
+   "link_to": "SF Companies",
    "stats_filter": "{}",
    "type": "DocType"
   }

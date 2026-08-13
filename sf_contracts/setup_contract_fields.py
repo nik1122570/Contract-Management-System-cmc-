@@ -31,7 +31,7 @@ def add_contract_lifecycle_fields():
 				"fieldname": "sf_contract_lifecycle_status",
 				"label": "Contract Lifecycle Status",
 				"fieldtype": "Select",
-				"options": "Draft\nPending Execution\nExecuted – Awaiting Commencement\nActive\nExpired – Services Continuing\nClosed\nTerminated",
+				"options": "Draft\nActive\nExpired – Services Continuing\nClosed\nTerminated",
 				"default": "Draft",
 				"insert_after": "status",
 				"allow_on_submit": 1,
@@ -81,7 +81,9 @@ def migrate_contract_lifecycle_status_values():
 		return
 
 	status_map = {
-		"Pending": "Pending Execution",
+		"Pending": "Draft",
+		"Pending Execution": "Draft",
+		"Executed – Awaiting Commencement": "Draft",
 		"Expired": "Expired – Services Continuing",
 		"Completed": "Closed",
 	}
@@ -210,6 +212,35 @@ def add_contract_compliance_link_field():
 	frappe.clear_cache(doctype="Contract")
 
 
+def set_requires_fulfilment_always_enabled():
+	"""Require every Contract to have fulfilment tracking enabled."""
+	make_property_setter(
+		"Contract",
+		"requires_fulfilment",
+		"default",
+		"1",
+		"Check",
+	)
+	make_property_setter(
+		"Contract",
+		"requires_fulfilment",
+		"read_only",
+		"1",
+		"Check",
+	)
+
+	if frappe.db.has_column("Contract", "requires_fulfilment"):
+		frappe.db.sql(
+			"""
+			update `tabContract`
+			set requires_fulfilment = 1
+			where ifnull(requires_fulfilment, 0) = 0
+			"""
+		)
+
+	frappe.clear_cache(doctype="Contract")
+
+
 def sync_contract_field_order():
 	"""Keep app-added Contract fields visible when Customize Form has a saved field_order."""
 	meta = frappe.get_meta("Contract", cached=False)
@@ -250,4 +281,5 @@ def setup_contract_customizations():
 	add_contract_business_fields()
 	add_contract_health_fields()
 	add_contract_compliance_link_field()
+	set_requires_fulfilment_always_enabled()
 	sync_contract_field_order()

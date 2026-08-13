@@ -1,0 +1,153 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:category_name",
+ "creation": "2026-08-12 19:20:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "category_name",
+  "description",
+  "default_frequency",
+  "required_fields_section",
+  "requires_authority",
+  "requires_license_no",
+  "requires_period",
+  "requires_month_year",
+  "requires_issue_date",
+  "requires_effective_date",
+  "requires_due_date",
+  "requires_expiry_date",
+  "requires_amount",
+  "requires_attachment",
+  "fields_section",
+  "fields"
+ ],
+ "fields": [
+  {
+   "fieldname": "category_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Category Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "default_frequency",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Default Frequency",
+   "options": "\nOne Time\nMonthly\nQuarterly\nAnnual\nRenewal Based"
+  },
+  {
+   "fieldname": "required_fields_section",
+   "fieldtype": "Section Break",
+   "label": "Required Common Fields"
+  },
+  {
+   "default": "0",
+   "fieldname": "requires_authority",
+   "fieldtype": "Check",
+   "label": "Requires Authority"
+  },
+  {
+   "default": "0",
+   "fieldname": "requires_license_no",
+   "fieldtype": "Check",
+   "label": "Requires Registration / License No"
+  },
+  {
+   "default": "0",
+   "fieldname": "requires_period",
+   "fieldtype": "Check",
+   "label": "Requires Period"
+  },
+  {
+   "default": "0",
+   "fieldname": "requires_month_year",
+   "fieldtype": "Check",
+   "label": "Requires Month and Year"
+  },
+  {
+   "default": "0",
+   "fieldname": "requires_issue_date",
+   "fieldtype": "Check",
+   "label": "Requires Issue Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "requires_effective_date",
+   "fieldtype": "Check",
+   "label": "Requires Effective Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "requires_due_date",
+   "fieldtype": "Check",
+   "label": "Requires Due Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "requires_expiry_date",
+   "fieldtype": "Check",
+   "label": "Requires Expiry Date"
+  },
+  {
+   "default": "0",
+   "fieldname": "requires_amount",
+   "fieldtype": "Check",
+   "label": "Requires Amount"
+  },
+  {
+   "default": "0",
+   "fieldname": "requires_attachment",
+   "fieldtype": "Check",
+   "label": "Requires Attachment"
+  },
+  {
+   "fieldname": "fields_section",
+   "fieldtype": "Section Break",
+   "label": "Category Specific Fields"
+  },
+  {
+   "fieldname": "fields",
+   "fieldtype": "Table",
+   "label": "Fields",
+   "options": "Compliance Category Field"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-12 19:20:00.000000",
+ "modified_by": "Administrator",
+ "module": "SF Contracts",
+ "name": "Compliance Category",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "category_name"
+}

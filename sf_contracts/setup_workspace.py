@@ -3,7 +3,7 @@ import json
 import frappe
 
 
-DASHBOARD_BLOCK = "SF Contract Dashboard"
+DASHBOARD_BLOCK = "SF Legal Command Center"
 
 CONTRACT_NUMBER_CARDS = [
 	{
@@ -15,8 +15,8 @@ CONTRACT_NUMBER_CARDS = [
 	},
 	{
 		"name": "Pending Contracts",
-		"label": "Pending Execution",
-		"status": "Pending Execution",
+		"label": "Draft Contracts",
+		"status": "Draft",
 		"method": "sf_contracts.contract_number_cards.pending_contracts",
 		"color": "#b76b00",
 		"background_color": "#fff8e8",
@@ -90,6 +90,10 @@ def get_dashboard_block_html():
 		<div class="sfw-panel sfw-panel-health">
 			<div class="sfw-panel-title">Contract Health</div>
 			<div class="sfw-health-visual"></div>
+		</div>
+		<div class="sfw-panel sfw-panel-compliance-pie">
+			<div class="sfw-panel-title">Compliance Tracker</div>
+			<div class="sfw-compliance-tracker-visual"></div>
 		</div>
 		<div class="sfw-panel sfw-panel-funnel">
 			<div class="sfw-panel-title">Lifecycle Funnel</div>
@@ -236,10 +240,11 @@ def get_dashboard_block_style():
 .sfw-visual-grid {
 	display: grid;
 	gap: 12px;
-	grid-template-columns: 1.05fr 1.45fr;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 	margin-bottom: 12px;
 }
 .sfw-panel-health,
+.sfw-panel-compliance-pie,
 .sfw-panel-expiry {
 	min-height: 280px;
 }
@@ -268,7 +273,8 @@ def get_dashboard_block_style():
 	font-weight: 800;
 	margin-bottom: 10px;
 }
-.sfw-health-visual {
+.sfw-health-visual,
+.sfw-compliance-tracker-visual {
 	align-items: center;
 	display: grid;
 	gap: 18px;
@@ -313,9 +319,19 @@ def get_dashboard_block_style():
 }
 .sfw-legend-row {
 	align-items: center;
+	background: transparent;
+	border: 0;
+	color: inherit;
+	cursor: pointer;
 	display: grid;
 	gap: 8px;
 	grid-template-columns: auto minmax(0, 1fr) auto;
+	padding: 0;
+	text-align: left;
+	width: 100%;
+}
+.sfw-legend-row:hover span:nth-child(2) {
+	color: var(--sf-blue);
 }
 .sfw-dot {
 	border-radius: 50%;
@@ -545,7 +561,8 @@ function render() {
 }
 
 function renderVisualizations(visualizations) {
-	renderHealthDonut(visualizations.health_distribution || []);
+	renderDonut(".sfw-health-visual", visualizations.health_distribution || [], "Total", "Contract");
+	renderDonut(".sfw-compliance-tracker-visual", visualizations.compliance_tracker_distribution || [], "Trackers", "Contract Compliance Tracker");
 	renderLifecycleFunnel(visualizations.lifecycle_distribution || []);
 	renderExpiryTimeline(visualizations.expiry_buckets || []);
 }
@@ -560,8 +577,8 @@ function getVisualColor(color) {
 	}[color || "gray"] || "#667085";
 }
 
-function renderHealthDonut(items) {
-	const $target = $root.find(".sfw-health-visual").empty();
+function renderDonut(selector, items, totalLabel, routeDoctype) {
+	const $target = $root.find(selector).empty();
 	const total = items.reduce((sum, item) => sum + cint(item.count), 0);
 	let angle = 0;
 	const segments = [];
@@ -577,23 +594,38 @@ function renderHealthDonut(items) {
 		<div class="sfw-donut" style="${background ? `background:${background}` : ""}">
 			<div class="sfw-donut-center">
 				<strong>${total}</strong>
-				<span>Total</span>
+				<span>${escapeHTML(totalLabel)}</span>
 			</div>
 		</div>
 	`);
 	const $legend = $('<div class="sfw-legend"></div>');
 
 	items.forEach((item) => {
-		$legend.append(`
-			<div class="sfw-legend-row">
+		const $row = $(`
+			<button class="sfw-legend-row" data-label="${escapeHTML(item.label)}">
 				<span class="sfw-dot ${item.color || "gray"}"></span>
 				<span>${escapeHTML(item.label)}</span>
 				<strong class="text-${item.color || "gray"}">${cint(item.count)}</strong>
-			</div>
+			</button>
 		`);
+		$row.on("click", () => openDonutSegment(routeDoctype, item));
+		$legend.append($row);
 	});
 
 	$target.append($donut, $legend);
+}
+
+function openDonutSegment(routeDoctype, item) {
+	if (!item.count) return;
+
+	if (routeDoctype === "Contract") {
+		frappe.route_options = { sf_contract_health_score: item.label };
+		frappe.set_route("List", "Contract");
+		return;
+	}
+
+	frappe.route_options = item.route_options || {};
+	frappe.set_route("List", routeDoctype);
 }
 
 function renderLifecycleFunnel(items) {
@@ -843,6 +875,34 @@ def update_legal_workspace():
 		},
 		{
 			"type": "Link",
+			"label": "Compliance Register",
+			"link_type": "DocType",
+			"link_to": "Compliance Register",
+			"onboard": 1,
+		},
+		{
+			"type": "Link",
+			"label": "Compliance Category",
+			"link_type": "DocType",
+			"link_to": "Compliance Category",
+			"onboard": 0,
+		},
+		{
+			"type": "Link",
+			"label": "Compliance Settings",
+			"link_type": "DocType",
+			"link_to": "Compliance Settings",
+			"onboard": 0,
+		},
+		{
+			"type": "Link",
+			"label": "SF Companies",
+			"link_type": "DocType",
+			"link_to": "SF Companies",
+			"onboard": 1,
+		},
+		{
+			"type": "Link",
 			"label": "Contract Template",
 			"link_type": "DocType",
 			"link_to": "Contract Template",
@@ -873,6 +933,26 @@ def update_legal_workspace():
 			"format": "{}",
 			"stats_filter": "{}",
 		},
+		{
+			"type": "DocType",
+			"label": "Compliance Register",
+			"link_to": "Compliance Register",
+			"doc_view": "List",
+			"icon": "check-circle",
+			"color": "#005aa8",
+			"format": "{}",
+			"stats_filter": "{}",
+		},
+		{
+			"type": "DocType",
+			"label": "SF Companies",
+			"link_to": "SF Companies",
+			"doc_view": "List",
+			"icon": "organization",
+			"color": "#009847",
+			"format": "{}",
+			"stats_filter": "{}",
+		},
 	]:
 		workspace.append("shortcuts", shortcut)
 
@@ -899,6 +979,16 @@ def update_legal_workspace():
 				"id": "sfcm_compliance_tracker_shortcut",
 				"type": "shortcut",
 				"data": {"shortcut_name": "Compliance Tracker", "col": 3},
+			},
+			{
+				"id": "sfcm_compliance_register_shortcut",
+				"type": "shortcut",
+				"data": {"shortcut_name": "Compliance Register", "col": 3},
+			},
+			{
+				"id": "sfcm_sf_companies_shortcut",
+				"type": "shortcut",
+				"data": {"shortcut_name": "SF Companies", "col": 3},
 			},
 			{"id": "sfcm_spacer_2", "type": "spacer", "data": {"col": 12}},
 			{

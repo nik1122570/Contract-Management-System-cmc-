@@ -209,9 +209,11 @@
    "options": "Contract Table 1"
   },
   {
+   "default": "Today",
    "fieldname": "evaluation_date",
    "fieldtype": "Date",
    "label": "Evaluation Date",
+   "read_only": 1,
    "reqd": 1
   },
   {

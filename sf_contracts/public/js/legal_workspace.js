@@ -90,6 +90,10 @@
 						<div class="sfw-health-visual"></div>
 					</div>
 					<div class="sfw-panel">
+						<div class="sfw-panel-title">Compliance Tracker</div>
+						<div class="sfw-compliance-tracker-visual"></div>
+					</div>
+					<div class="sfw-panel">
 						<div class="sfw-panel-title">Lifecycle Funnel</div>
 						<div class="sfw-lifecycle-funnel"></div>
 					</div>
@@ -115,7 +119,13 @@
 
 	function render_visuals(data) {
 		const visualizations = data.visualizations || {};
-		render_health_donut(visualizations.health_distribution || []);
+		render_donut(".sfw-health-visual", visualizations.health_distribution || [], "Total", "Contract");
+		render_donut(
+			".sfw-compliance-tracker-visual",
+			visualizations.compliance_tracker_distribution || [],
+			"Trackers",
+			"Contract Compliance Tracker"
+		);
 		render_lifecycle_funnel(visualizations.lifecycle_distribution || []);
 		render_expiry_timeline(visualizations.expiry_buckets || []);
 		render_contract_list(
@@ -137,8 +147,8 @@
 		$(`#${DASHBOARD_ID} .sfw-new-contract`).on("click", () => frappe.new_doc("Contract"));
 	}
 
-	function render_health_donut(items) {
-		const $target = $(`#${DASHBOARD_ID} .sfw-health-visual`).empty();
+	function render_donut(selector, items, total_label, route_doctype) {
+		const $target = $(`#${DASHBOARD_ID} ${selector}`).empty();
 		const total = items.reduce((sum, item) => sum + cint(item.count), 0);
 		let angle = 0;
 		const segments = [];
@@ -153,21 +163,38 @@
 		const $legend = $('<div class="sfw-legend"></div>');
 
 		items.forEach((item) => {
-			$legend.append(`
-				<div class="sfw-legend-row">
+			const $row = $(`
+				<button class="sfw-legend-row">
 					<span class="sfw-dot ${item.color || "gray"}"></span>
 					<span>${escape_html(item.label)}</span>
 					<strong class="text-${item.color || "gray"}">${cint(item.count)}</strong>
-				</div>
+				</button>
 			`);
+			$row.on("click", () => open_donut_segment(route_doctype, item));
+			$legend.append($row);
 		});
 
 		$target.append(`
 			<div class="sfw-donut" style="${background}">
-				<div class="sfw-donut-center"><strong>${total}</strong><span>Total</span></div>
+				<div class="sfw-donut-center"><strong>${total}</strong><span>${escape_html(total_label)}</span></div>
 			</div>
 		`);
 		$target.append($legend);
+	}
+
+	function open_donut_segment(route_doctype, item) {
+		if (!item.count) {
+			return;
+		}
+
+		if (route_doctype === "Contract") {
+			frappe.route_options = { sf_contract_health_score: item.label };
+			frappe.set_route("List", "Contract");
+			return;
+		}
+
+		frappe.route_options = item.route_options || {};
+		frappe.set_route("List", route_doctype);
 	}
 
 	function render_lifecycle_funnel(items) {
@@ -319,13 +346,13 @@
 			#${DASHBOARD_ID} .sfw-visual-grid { margin-bottom: 12px; }
 			#${DASHBOARD_ID} .sfw-panel { background: #fff; border: 1px solid var(--sf-line); border-radius: 8px; box-shadow: 0 8px 22px rgba(0,72,138,.07); padding: 16px; }
 			#${DASHBOARD_ID} .sfw-panel-title { color: var(--sf-blue-dark); font-size: 15px; font-weight: 800; margin-bottom: 10px; }
-			#${DASHBOARD_ID} .sfw-health-visual { align-items: center; display: grid; gap: 18px; grid-template-columns: auto minmax(0,1fr); min-height: 220px; }
+			#${DASHBOARD_ID} .sfw-health-visual, #${DASHBOARD_ID} .sfw-compliance-tracker-visual { align-items: center; display: grid; gap: 18px; grid-template-columns: auto minmax(0,1fr); min-height: 220px; }
 			#${DASHBOARD_ID} .sfw-donut { align-items: center; background: conic-gradient(#eaecf0 0deg 360deg); border-radius: 50%; display: flex; height: 172px; justify-content: center; position: relative; width: 172px; }
 			#${DASHBOARD_ID} .sfw-donut::after { background: #fff; border-radius: 50%; content: ""; height: 112px; position: absolute; width: 112px; }
 			#${DASHBOARD_ID} .sfw-donut-center { color: var(--sf-ink); display: grid; font-size: 12px; font-weight: 700; justify-items: center; position: relative; z-index: 1; }
 			#${DASHBOARD_ID} .sfw-donut-center strong { color: var(--sf-blue-dark); font-size: 28px; line-height: 1; }
 			#${DASHBOARD_ID} .sfw-legend { display: grid; gap: 10px; }
-			#${DASHBOARD_ID} .sfw-legend-row { align-items: center; display: grid; gap: 8px; grid-template-columns: auto minmax(0,1fr) auto; }
+			#${DASHBOARD_ID} .sfw-legend-row { align-items: center; background: transparent; border: 0; color: inherit; cursor: pointer; display: grid; gap: 8px; grid-template-columns: auto minmax(0,1fr) auto; padding: 0; text-align: left; width: 100%; }
 			#${DASHBOARD_ID} .sfw-dot { border-radius: 50%; height: 10px; width: 10px; }
 			#${DASHBOARD_ID} .sfw-dot.green, #${DASHBOARD_ID} .sfw-funnel-bar.green, #${DASHBOARD_ID} .sfw-expiry-fill.green { background: #08763d; }
 			#${DASHBOARD_ID} .sfw-dot.orange, #${DASHBOARD_ID} .sfw-funnel-bar.orange, #${DASHBOARD_ID} .sfw-expiry-fill.orange { background: #b76b00; }

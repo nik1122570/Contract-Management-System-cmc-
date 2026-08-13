@@ -365,7 +365,7 @@
    "name": "Contract-sf_contract_lifecycle_status",
    "no_copy": 1,
    "non_negative": 0,
-   "options": "Draft\nPending Execution\nExecuted \u2013 Awaiting Commencement\nActive\nExpired \u2013 Services Continuing\nClosed\nTerminated",
+   "options": "Draft\nActive\nExpired \u2013 Services Continuing\nClosed\nTerminated",
    "owner": "Administrator",
    "permlevel": 0,
    "placeholder": null,

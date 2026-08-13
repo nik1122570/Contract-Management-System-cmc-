@@ -13,7 +13,7 @@
  "is_standard": 1,
  "label": "Closed Contracts",
  "method": "sf_contracts.contract_number_cards.completed_contracts",
- "modified": "2026-07-30 11:31:19.545930",
+ "modified": "2026-08-13 10:04:07.692207",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "Completed Contracts",

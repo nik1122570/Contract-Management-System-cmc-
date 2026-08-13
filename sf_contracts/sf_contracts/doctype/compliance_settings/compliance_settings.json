@@ -1,0 +1,76 @@
+{
+ "actions": [],
+ "creation": "2026-08-13 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "priority_thresholds_section",
+  "critical_days",
+  "high_days",
+  "medium_days",
+  "instructions"
+ ],
+ "fields": [
+  {
+   "fieldname": "priority_thresholds_section",
+   "fieldtype": "Section Break",
+   "label": "Compliance Priority Thresholds"
+  },
+  {
+   "default": "7",
+   "description": "Expired compliance records and records with days to expiry up to this number are marked Critical.",
+   "fieldname": "critical_days",
+   "fieldtype": "Int",
+   "label": "Critical Within Days",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "default": "30",
+   "description": "Records with days to expiry up to this number are marked High, after the Critical threshold.",
+   "fieldname": "high_days",
+   "fieldtype": "Int",
+   "label": "High Within Days",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "default": "90",
+   "description": "Records with days to expiry up to this number are marked Medium, after the High threshold. Records beyond this are Low.",
+   "fieldname": "medium_days",
+   "fieldtype": "Int",
+   "label": "Medium Within Days",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "instructions",
+   "fieldtype": "HTML",
+   "label": "Instructions",
+   "options": "<div class=\"text-muted\">Priority is calculated from Days to Expiry. Expired, Not Compliant, and Not Paid records remain Critical. Low applies automatically when the record is beyond the Medium threshold.</div>"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-08-13 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SF Contracts",
+ "name": "Compliance Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
