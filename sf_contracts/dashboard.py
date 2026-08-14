@@ -20,8 +20,8 @@ HEALTH_COLORS = {
 }
 COMPLIANCE_TRACKER_COLORS = {
 	"Compliant": "green",
-	"Attention Needed": "orange",
-	"Critical": "red",
+	"Partially Compliant": "orange",
+	"Non-Compliant": "red",
 	"Not Evaluated": "gray",
 }
 
@@ -138,9 +138,9 @@ def _build_compliance_tracker_distribution():
 		return []
 
 	distribution = {
-		"Critical": 0,
-		"Attention Needed": 0,
 		"Compliant": 0,
+		"Partially Compliant": 0,
+		"Non-Compliant": 0,
 		"Not Evaluated": 0,
 	}
 	trackers = frappe.get_list(
@@ -148,19 +148,10 @@ def _build_compliance_tracker_distribution():
 		fields=["name", "compliance_percentage"],
 		limit_page_length=500,
 	)
+	obligation_statuses = _get_tracker_obligation_statuses([tracker.name for tracker in trackers])
 
 	for tracker in trackers:
-		if tracker.compliance_percentage is None:
-			distribution["Not Evaluated"] += 1
-			continue
-
-		percentage = float(tracker.compliance_percentage or 0)
-		if percentage >= 100:
-			distribution["Compliant"] += 1
-		elif percentage >= 70:
-			distribution["Attention Needed"] += 1
-		else:
-			distribution["Critical"] += 1
+		distribution[_get_tracker_compliance_bucket(tracker, obligation_statuses.get(tracker.name, []))] += 1
 
 	return [
 		{
@@ -173,13 +164,47 @@ def _build_compliance_tracker_distribution():
 	]
 
 
+def _get_tracker_obligation_statuses(tracker_names):
+	if not tracker_names:
+		return {}
+
+	rows = frappe.get_all(
+		"Contract Table 1",
+		fields=["parent", "compliance_status"],
+		filters={"parenttype": "Contract Compliance Tracker", "parent": ["in", tracker_names]},
+		limit_page_length=5000,
+	)
+	statuses_by_tracker = {tracker_name: [] for tracker_name in tracker_names}
+
+	for row in rows:
+		statuses_by_tracker.setdefault(row.parent, []).append(row.compliance_status)
+
+	return statuses_by_tracker
+
+
+def _get_tracker_compliance_bucket(tracker, statuses):
+	evaluated_statuses = [status for status in statuses if (status or "").strip()]
+
+	if not evaluated_statuses:
+		return "Not Evaluated"
+
+	percentage = float(tracker.compliance_percentage or 0)
+	if percentage >= 100:
+		return "Compliant"
+
+	if percentage > 0:
+		return "Partially Compliant"
+
+	return "Non-Compliant"
+
+
 def _get_compliance_tracker_route_options(label):
 	if label == "Compliant":
 		return {"compliance_percentage": [">=", 100]}
-	if label == "Attention Needed":
-		return {"compliance_percentage": ["between", [70, 99.99]]}
-	if label == "Critical":
-		return {"compliance_percentage": ["<", 70]}
+	if label == "Partially Compliant":
+		return {"compliance_percentage": ["between", [0.01, 99.99]]}
+	if label == "Non-Compliant":
+		return {"compliance_percentage": ["=", 0]}
 	if label == "Not Evaluated":
 		return {"compliance_percentage": ["is", "not set"]}
 

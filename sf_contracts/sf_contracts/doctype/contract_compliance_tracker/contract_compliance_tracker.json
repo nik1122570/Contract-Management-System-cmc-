@@ -15,6 +15,7 @@
   "naming_series",
   "contract_type",
   "contractor",
+  "company",
   "section_break_yalf",
   "sf_compliance_dashboard",
   "section_break_dnja",
@@ -51,6 +52,7 @@
   {
    "fieldname": "compliance_percentage",
    "fieldtype": "Percent",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Compliance %",
    "no_copy": 1,
@@ -102,12 +104,25 @@
    "in_standard_filter": 1,
    "label": "Contractor",
    "options": "Contractor"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "contract.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "SF Companies",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-13 22:09:07.597351",
+ "modified": "2026-08-15 00:52:47.321454",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "Contract Compliance Tracker",

@@ -44,6 +44,10 @@ def get_contracts(filters):
 		conditions.append("c.party_name like %(party_name)s")
 		values["party_name"] = f"%{filters.party_name}%"
 
+	if filters.get("company"):
+		conditions.append("c.company = %(company)s")
+		values["company"] = filters.company
+
 	if filters.get("contractor"):
 		conditions.append("c.sf_contractor = %(contractor)s")
 		values["contractor"] = filters.contractor
@@ -65,17 +69,13 @@ def get_contracts(filters):
 		values["today"] = nowdate()
 		values["expiry_limit"] = add_days(nowdate(), filters.expiry_within_days)
 
-	if filters.get("signed_status") == "Signed":
-		conditions.append("ifnull(c.is_signed, 0) = 1")
-	elif filters.get("signed_status") == "Unsigned":
-		conditions.append("ifnull(c.is_signed, 0) = 0")
-
 	where_clause = " where " + " and ".join(conditions) if conditions else ""
 
 	return frappe.db.sql(
 		f"""
 		select
 			c.name,
+			c.company,
 			c.party_type,
 			c.party_name,
 			c.sf_contractor,
@@ -85,13 +85,22 @@ def get_contracts(filters):
 			c.sf_contract_health_reason,
 			c.start_date,
 			c.end_date,
-			c.is_signed,
 			c.sf_signed_contract_document,
-			c.sf_compliance_tracker,
-			t.compliance_percentage
+			(
+				select tracker.name
+				from `tabContract Compliance Tracker` tracker
+				where tracker.contract = c.name
+				order by tracker.evaluation_date desc, tracker.creation desc
+				limit 1
+			) as sf_compliance_tracker,
+			(
+				select tracker.compliance_percentage
+				from `tabContract Compliance Tracker` tracker
+				where tracker.contract = c.name
+				order by tracker.evaluation_date desc, tracker.creation desc
+				limit 1
+			) as compliance_percentage
 		from `tabContract` c
-		left join `tabContract Compliance Tracker` t
-			on t.name = c.sf_compliance_tracker or t.contract = c.name
 		{where_clause}
 		order by
 			field(c.sf_contract_lifecycle_status, 'Active', 'Expired', 'Terminated'),
@@ -106,6 +115,7 @@ def get_contracts(filters):
 def get_detail_columns():
 	return [
 		{"label": _("Contract"), "fieldname": "name", "fieldtype": "Link", "options": "Contract", "width": 180},
+		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "SF Companies", "width": 190},
 		{"label": _("Party"), "fieldname": "party_name", "fieldtype": "Data", "width": 180},
 		{"label": _("Contractor"), "fieldname": "sf_contractor", "fieldtype": "Link", "options": "Contractor", "width": 160},
 		{"label": _("Contract Type"), "fieldname": "sf_contract_type", "fieldtype": "Link", "options": "Contract Type", "width": 150},
@@ -115,7 +125,6 @@ def get_detail_columns():
 		{"label": _("Start Date"), "fieldname": "start_date", "fieldtype": "Date", "width": 110},
 		{"label": _("End Date"), "fieldname": "end_date", "fieldtype": "Date", "width": 110},
 		{"label": _("Days to Expiry"), "fieldname": "days_to_expiry", "fieldtype": "Int", "width": 120},
-		{"label": _("Signed"), "fieldname": "signed", "fieldtype": "Data", "width": 90},
 		{"label": _("Signed Document"), "fieldname": "sf_signed_contract_document", "fieldtype": "Data", "width": 220},
 		{"label": _("Compliance %"), "fieldname": "compliance_percentage", "fieldtype": "Percent", "width": 120},
 		{"label": _("Compliance Tracker"), "fieldname": "sf_compliance_tracker", "fieldtype": "Link", "options": "Contract Compliance Tracker", "width": 180},
@@ -132,7 +141,6 @@ def get_detail_data(contracts):
 			{
 				**contract,
 				"days_to_expiry": date_diff(end_date, today) if end_date else None,
-				"signed": _("Yes") if contract.is_signed else _("No"),
 				"compliance_percentage": flt(contract.compliance_percentage) if contract.compliance_percentage is not None else None,
 			}
 		)
@@ -144,8 +152,6 @@ def get_summary_columns():
 	return [
 		{"label": _("Lifecycle Status"), "fieldname": "lifecycle_status", "fieldtype": "Data", "width": 190},
 		{"label": _("Total Contracts"), "fieldname": "total_contracts", "fieldtype": "Int", "width": 130},
-		{"label": _("Signed"), "fieldname": "signed_contracts", "fieldtype": "Int", "width": 100},
-		{"label": _("Unsigned"), "fieldname": "unsigned_contracts", "fieldtype": "Int", "width": 100},
 		{"label": _("Critical"), "fieldname": "critical_contracts", "fieldtype": "Int", "width": 100},
 		{"label": _("Attention Needed"), "fieldname": "attention_needed_contracts", "fieldtype": "Int", "width": 140},
 		{"label": _("Healthy"), "fieldname": "healthy_contracts", "fieldtype": "Int", "width": 100},
@@ -161,8 +167,6 @@ def get_summary_data(contracts):
 		summary.setdefault(status, new_summary_row(status))
 		row = summary[status]
 		row["total_contracts"] += 1
-		row["signed_contracts"] += 1 if contract.is_signed else 0
-		row["unsigned_contracts"] += 0 if contract.is_signed else 1
 
 		health = contract.sf_contract_health_score
 		if health == "Critical":
@@ -189,8 +193,6 @@ def new_summary_row(status):
 	return {
 		"lifecycle_status": status,
 		"total_contracts": 0,
-		"signed_contracts": 0,
-		"unsigned_contracts": 0,
 		"critical_contracts": 0,
 		"attention_needed_contracts": 0,
 		"healthy_contracts": 0,
@@ -221,12 +223,10 @@ def get_report_summary(contracts):
 	critical = sum(1 for contract in contracts if contract.sf_contract_health_score == "Critical")
 	attention = sum(1 for contract in contracts if contract.sf_contract_health_score == "Attention Needed")
 	healthy = sum(1 for contract in contracts if contract.sf_contract_health_score == "Healthy")
-	unsigned = sum(1 for contract in contracts if not contract.is_signed)
 
 	return [
 		{"label": _("Total Contracts"), "value": total, "indicator": "Blue"},
 		{"label": _("Critical"), "value": critical, "indicator": "Red"},
 		{"label": _("Attention Needed"), "value": attention, "indicator": "Orange"},
 		{"label": _("Healthy"), "value": healthy, "indicator": "Green"},
-		{"label": _("Unsigned"), "value": unsigned, "indicator": "Orange"},
 	]

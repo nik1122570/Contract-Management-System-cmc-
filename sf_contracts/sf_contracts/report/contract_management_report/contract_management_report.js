@@ -37,6 +37,12 @@ frappe.query_reports["Contract Management Report"] = {
 			fieldtype: "Data",
 		},
 		{
+			fieldname: "company",
+			label: __("Company"),
+			fieldtype: "Link",
+			options: "SF Companies",
+		},
+		{
 			fieldname: "contractor",
 			label: __("Contractor"),
 			fieldtype: "Link",
@@ -62,12 +68,6 @@ frappe.query_reports["Contract Management Report"] = {
 			fieldname: "expiry_within_days",
 			label: __("Expiring Within Days"),
 			fieldtype: "Int",
-		},
-		{
-			fieldname: "signed_status",
-			label: __("Signed Status"),
-			fieldtype: "Select",
-			options: "\nSigned\nUnsigned",
 		},
 	],
 };

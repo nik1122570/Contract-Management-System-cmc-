@@ -138,7 +138,7 @@ def add_contract_business_fields():
 			"insert_after": "sf_legal_classification_section",
 			"is_system_generated": 0,
 			"allow_on_submit": 1,
-				"in_list_view": 1,
+				"in_list_view": 0,
 				"in_standard_filter": 1,
 				"description": "",
 			},
@@ -190,7 +190,7 @@ def add_contract_health_fields():
 				"insert_after": "sf_contract_lifecycle_status",
 				"read_only": 1,
 				"allow_on_submit": 1,
-				"in_list_view": 1,
+				"in_list_view": 0,
 				"in_standard_filter": 1,
 				"no_copy": 1,
 				"description": "",
@@ -321,6 +321,38 @@ def sync_contract_field_order():
 	frappe.clear_cache(doctype="Contract")
 
 
+def set_contract_list_view_fields():
+	"""Keep Contract list view focused for Legal users."""
+	visible_fields = {
+		"company",
+		"workflow_state",
+		"sf_contract_lifecycle_status",
+		"sf_contract_type",
+	}
+	hidden_fields = {
+		"party_name",
+		"status",
+		"sf_contractor",
+		"sf_contract_health_score",
+		"fulfilment_status",
+		"signed_on",
+		"is_signed",
+		"sf_signed_contract_document",
+		"sf_compliance_tracker",
+	}
+
+	for fieldname in visible_fields:
+		make_property_setter("Contract", fieldname, "in_list_view", "1", "Check")
+
+	for fieldname in hidden_fields:
+		make_property_setter("Contract", fieldname, "in_list_view", "0", "Check")
+
+	if frappe.db.exists("DocField", {"parent": "Contract", "fieldname": "workflow_state"}):
+		make_property_setter("Contract", "workflow_state", "label", "Workflow State", "Data")
+
+	frappe.clear_cache(doctype="Contract")
+
+
 def clear_contract_custom_field_descriptions():
 	"""Remove helper text below app-added Contract fields for a cleaner legal form."""
 	fieldnames = (
@@ -354,4 +386,5 @@ def setup_contract_customizations():
 	add_contract_compliance_link_field()
 	set_requires_fulfilment_always_enabled()
 	sync_contract_field_order()
+	set_contract_list_view_fields()
 	clear_contract_custom_field_descriptions()
