@@ -4,6 +4,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
+from frappe.utils import add_months, formatdate, getdate
 
 
 class ContractComplianceTracker(Document):
@@ -36,16 +37,14 @@ class ContractComplianceTracker(Document):
 		self.contractor = contract_values.get("sf_contractor")
 
 	def set_compliance_percentage(self):
-		table_fields = ("table_ewpx", "table_jpcz", "table_dhlt", "table_mmyd")
 		total = 0
 		compliant = 0
 
-		for fieldname in table_fields:
-			for row in self.get(fieldname) or []:
-				total += 1
+		for row in self.get("table_ewpx") or []:
+			total += 1
 
-				if self.get_compliance_status_class(row.get("compliance_status")) == "compliant":
-					compliant += 1
+			if self.get_compliance_status_class(row.get("compliance_status")) == "compliant":
+				compliant += 1
 
 		self.compliance_percentage = round((compliant / total) * 100) if total else 0
 
@@ -61,22 +60,14 @@ class ContractComplianceTracker(Document):
 		return "pending"
 
 	def validate_empty_obligation_rows(self):
-		table_fields = (
-			("table_ewpx", _("Obligation Table 1")),
-			("table_jpcz", _("Obligation Table 2")),
-			("table_dhlt", _("Obligation Table 3")),
-			("table_mmyd", _("Obligation 4")),
-		)
-
-		for fieldname, label in table_fields:
-			for row in self.get(fieldname) or []:
-				if self.is_empty_obligation_row(row):
-					frappe.throw(
-						_("{0}, row {1} is empty. Please fill in the row or delete it before saving.").format(
-							label, row.idx
-						),
-						title=_("Empty Obligation Row"),
-					)
+		for row in self.get("table_ewpx") or []:
+			if self.is_empty_obligation_row(row):
+				frappe.throw(
+					_("Compliance Obligations, row {0} is empty. Please fill in the row or delete it before saving.").format(
+						row.idx
+					),
+					title=_("Empty Obligation Row"),
+				)
 
 	def is_empty_obligation_row(self, row):
 		obligation_fields = (
@@ -84,7 +75,61 @@ class ContractComplianceTracker(Document):
 			"responsible_person",
 			"evidence_required",
 			"compliance_status",
-			"remarks__action",
 		)
 
 		return not any((row.get(fieldname) or "").strip() for fieldname in obligation_fields)
+
+
+@frappe.whitelist()
+def create_next_month_tracker(source_name):
+	if not source_name:
+		frappe.throw(_("Source Contract Compliance Tracker is required."))
+
+	source = frappe.get_doc("Contract Compliance Tracker", source_name)
+	source.check_permission("read")
+
+	next_evaluation_date = add_months(getdate(source.evaluation_date), 1)
+	existing = frappe.db.get_value(
+		"Contract Compliance Tracker",
+		{
+			"contract": source.contract,
+			"evaluation_date": next_evaluation_date,
+		},
+		"name",
+	)
+
+	if existing:
+		frappe.throw(
+			_("A Contract Compliance Tracker already exists for {0} on {1}.").format(
+				source.contract,
+				formatdate(next_evaluation_date),
+			),
+			title=_("Tracker Already Exists"),
+		)
+
+	target = frappe.new_doc("Contract Compliance Tracker")
+	target.contract = source.contract
+	target.evaluation_date = next_evaluation_date
+	target.party_name = source.party_name
+	target.contract_type = source.contract_type
+	target.contractor = source.contractor
+
+	for row in source.get("table_ewpx") or []:
+		target.append(
+			"table_ewpx",
+			{
+				"risk": row.risk,
+				"terms": row.terms,
+				"contractual_obligation": row.contractual_obligation,
+				"responsible_person": row.responsible_person,
+				"evidence_required": row.evidence_required,
+				"compliance_status": "",
+			},
+		)
+
+	target.insert()
+
+	return {
+		"name": target.name,
+		"evaluation_date": target.evaluation_date,
+	}

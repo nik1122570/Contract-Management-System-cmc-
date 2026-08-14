@@ -4,18 +4,14 @@ from frappe.utils import add_days, date_diff, getdate, nowdate
 
 
 STATE_ORDER = (
-	"Draft",
 	"Active",
-	"Expired – Services Continuing",
-	"Closed",
+	"Expired",
 	"Terminated",
 )
 STATE_COLORS = {
-	"Draft": "gray",
 	"Active": "green",
 	"Terminated": "red",
-	"Expired – Services Continuing": "red",
-	"Closed": "blue",
+	"Expired": "red",
 }
 HEALTH_COLORS = {
 	"Healthy": "green",
@@ -68,7 +64,7 @@ def _days_open(creation):
 
 
 def _serialize_contract(contract):
-	lifecycle_status = contract.get("sf_contract_lifecycle_status") or "Draft"
+	lifecycle_status = normalize_lifecycle_status(contract.get("sf_contract_lifecycle_status"))
 
 	return {
 		"name": contract.name,
@@ -110,7 +106,7 @@ def _build_state_cards():
 	contracts_by_state = {state: [] for state in STATE_ORDER}
 
 	for contract in all_contracts:
-		state = contract["lifecycle_status"] or "Draft"
+		state = normalize_lifecycle_status(contract["lifecycle_status"])
 		contracts_by_state.setdefault(state, []).append(contract)
 
 	return [
@@ -126,14 +122,14 @@ def _build_state_cards():
 
 
 def _build_health_distribution():
-	health_order = ("Critical", "Attention Needed", "Healthy")
 	return [
 		{
-			"label": health,
-			"count": frappe.db.count("Contract", {"sf_contract_health_score": health}),
-			"color": HEALTH_COLORS.get(health, "gray"),
+			"label": state,
+			"count": frappe.db.count("Contract", {"sf_contract_lifecycle_status": state}),
+			"color": STATE_COLORS.get(state, "gray"),
+			"route_options": {"sf_contract_lifecycle_status": ["=", state]},
 		}
-		for health in health_order
+		for state in STATE_ORDER
 	]
 
 
@@ -220,7 +216,7 @@ def _build_expiry_buckets():
 	)
 
 	for contract in contracts:
-		if contract.get("sf_contract_lifecycle_status") in ("Closed", "Terminated"):
+		if normalize_lifecycle_status(contract.get("sf_contract_lifecycle_status")) == "Terminated":
 			continue
 
 		days = date_diff(getdate(contract.end_date), today)
@@ -306,14 +302,6 @@ def _build_watchlists():
 		order_by="end_date asc",
 		limit_page_length=12,
 	)
-	unsigned_pending = _get_contracts(
-		filters={
-			"sf_contract_lifecycle_status": "Draft",
-			"is_signed": 0,
-		},
-		order_by="creation asc",
-		limit_page_length=12,
-	)
 	contract_health = _get_contracts(
 		filters={"sf_contract_health_score": "Critical"},
 		order_by="modified desc",
@@ -324,15 +312,11 @@ def _build_watchlists():
 		"contract_health": contract_health,
 		"expiring_soon": expiring_soon,
 		"near_completion": near_completion,
-		"unsigned_pending": unsigned_pending,
 	}
 
 
 def _build_predictor_summary(watchlists, cards):
 	card_counts = {card["status"]: card["count"] for card in cards}
-	unsigned_over_14_days = len(
-		[contract for contract in watchlists["unsigned_pending"] if contract["days_open"] >= 14]
-	)
 
 	return [
 		{
@@ -353,16 +337,19 @@ def _build_predictor_summary(watchlists, cards):
 			"indicator": "red" if watchlists["near_completion"] else "green",
 		},
 		{
-			"label": "Unsigned pending over 14 days",
-			"value": unsigned_over_14_days,
-			"indicator": "red" if unsigned_over_14_days else "green",
-		},
-		{
 			"label": "Expired contracts requiring action",
-			"value": card_counts.get("Expired – Services Continuing", 0),
-			"indicator": "red" if card_counts.get("Expired – Services Continuing", 0) else "green",
+			"value": card_counts.get("Expired", 0),
+			"indicator": "red" if card_counts.get("Expired", 0) else "green",
 		},
 	]
+
+
+def normalize_lifecycle_status(status):
+	if status in ("Terminated",):
+		return "Terminated"
+	if status in ("Expired", "Expired – Services Continuing", "Expired â€“ Services Continuing"):
+		return "Expired"
+	return "Active"
 
 
 @frappe.whitelist()

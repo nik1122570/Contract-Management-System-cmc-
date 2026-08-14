@@ -3,14 +3,17 @@ from frappe import _
 from frappe.utils import date_diff, getdate, nowdate
 
 
-FINAL_STATUSES = {"Closed", "Terminated"}
-MANUAL_STATUSES = FINAL_STATUSES | {"Expired – Services Continuing"}
+FINAL_STATUSES = {"Terminated"}
+MANUAL_STATUSES = FINAL_STATUSES
 LEGACY_STATUS_MAP = {
-	"Pending": "Draft",
-	"Pending Execution": "Draft",
-	"Executed – Awaiting Commencement": "Draft",
-	"Expired": "Expired – Services Continuing",
-	"Completed": "Closed",
+	"Draft": "Active",
+	"Pending": "Active",
+	"Pending Execution": "Active",
+	"Executed – Awaiting Commencement": "Active",
+	"Expired – Services Continuing": "Expired",
+	"Expired â€“ Services Continuing": "Expired",
+	"Completed": "Active",
+	"Closed": "Active",
 }
 EXPIRY_ATTENTION_DAYS = 30
 
@@ -44,18 +47,11 @@ def get_lifecycle_status(contract) -> str:
 	if current_status in MANUAL_STATUSES:
 		return current_status
 
-	if contract.get("docstatus") == 0:
-		return "Draft"
-
-	if not contract.get("is_signed"):
-		return "Draft"
-
 	today = getdate(nowdate())
-	start_date = getdate(contract.start_date) if contract.get("start_date") else None
 	end_date = getdate(contract.end_date) if contract.get("end_date") else None
 
 	if end_date and today > end_date:
-		return "Expired – Services Continuing"
+		return "Expired"
 
 	return "Active"
 
@@ -97,8 +93,8 @@ def get_contract_health_score(contract) -> tuple[str, str]:
 	days_to_expiry = date_diff(end_date, today) if end_date else None
 	compliance_percentage = get_contract_compliance_percentage(contract)
 
-	if is_expired_services_continuing(status):
-		return "Critical", _("Contract has expired but services are continuing.")
+	if status == "Expired":
+		return "Critical", _("Contract has expired.")
 
 	if contract.get("is_signed") and not contract.get("sf_signed_contract_document"):
 		return "Critical", _("Contract is marked signed but the signed document is missing.")
@@ -110,9 +106,6 @@ def get_contract_health_score(contract) -> tuple[str, str]:
 
 	if compliance_percentage is not None and compliance_percentage < 70:
 		return "Critical", _("Compliance is only {0}%.").format(compliance_percentage)
-
-	if status == "Draft":
-		return "Attention Needed", _("Contract is still pending execution.")
 
 	if contract.get("requires_fulfilment") and not contract.get("sf_compliance_tracker"):
 		return "Attention Needed", _("Requires fulfilment but no compliance tracker is linked.")
@@ -130,7 +123,7 @@ def get_contract_health_score(contract) -> tuple[str, str]:
 
 
 def is_expired_services_continuing(status):
-	return status in ("Expired – Services Continuing", "Expired â€“ Services Continuing")
+	return status in ("Expired", "Expired – Services Continuing", "Expired â€“ Services Continuing")
 
 
 def get_contract_compliance_percentage(contract):
@@ -154,19 +147,14 @@ def get_contract_compliance_percentage(contract):
 
 
 def get_contract_compliance_obligation_count(tracker):
-	total = 0
-
-	for parentfield in ("table_ewpx", "table_jpcz", "table_dhlt", "table_mmyd"):
-		total += frappe.db.count(
-			"Contract Table 1",
-			{
-				"parent": tracker,
-				"parenttype": "Contract Compliance Tracker",
-				"parentfield": parentfield,
-			},
-		)
-
-	return total
+	return frappe.db.count(
+		"Contract Table 1",
+		{
+			"parent": tracker,
+			"parenttype": "Contract Compliance Tracker",
+			"parentfield": "table_ewpx",
+		},
+	)
 
 
 def update_lifecycle_status_for_contracts():

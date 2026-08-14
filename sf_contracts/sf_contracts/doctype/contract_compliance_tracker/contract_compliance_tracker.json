@@ -17,30 +17,8 @@
   "contractor",
   "section_break_yalf",
   "sf_compliance_dashboard",
-  "section_break_aain",
-  "term",
-  "column_break_pbpv",
-  "risk",
   "section_break_dnja",
-  "table_ewpx",
-  "section_break_rebe",
-  "term_2",
-  "column_break_hxpu",
-  "risk_2",
-  "contract_table_2_section",
-  "table_jpcz",
-  "section_break_vick",
-  "term_3",
-  "column_break_axgz",
-  "risk_3",
-  "obligation_table_3_section",
-  "table_dhlt",
-  "section_break_ygkp",
-  "term_4",
-  "column_break_cmsb",
-  "risk_4",
-  "obligation_4_section",
-  "table_mmyd"
+  "table_ewpx"
  ],
  "fields": [
   {
@@ -57,8 +35,7 @@
    "in_standard_filter": 1,
    "label": "Contract",
    "options": "Contract",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "column_break_1",
@@ -89,122 +66,12 @@
    "fieldtype": "Section Break"
   },
   {
-   "fieldname": "section_break_aain",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "term",
-   "fieldtype": "Link",
-   "label": "Term 1",
-   "options": "Contract Term"
-  },
-  {
-   "fieldname": "column_break_pbpv",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "risk",
-   "fieldtype": "Select",
-   "label": "Risk 1",
-   "options": "\nHigh\nLow\nMedium"
-  },
-  {
    "fieldname": "section_break_dnja",
    "fieldtype": "Section Break",
-   "label": "Obligation Table 1"
+   "label": "Compliance Obligations"
   },
   {
    "fieldname": "table_ewpx",
-   "fieldtype": "Table",
-   "options": "Contract Table 1"
-  },
-  {
-   "fieldname": "section_break_rebe",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "term_2",
-   "fieldtype": "Link",
-   "label": "Term 2",
-   "options": "Contract Term"
-  },
-  {
-   "fieldname": "column_break_hxpu",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "risk_2",
-   "fieldtype": "Select",
-   "label": "Risk 2",
-   "options": "\nHigh\nLow\nMedium"
-  },
-  {
-   "fieldname": "contract_table_2_section",
-   "fieldtype": "Section Break",
-   "label": "Obligation Table 2"
-  },
-  {
-   "fieldname": "table_jpcz",
-   "fieldtype": "Table",
-   "options": "Contract Table 1"
-  },
-  {
-   "fieldname": "section_break_vick",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "term_3",
-   "fieldtype": "Link",
-   "label": "Term 3",
-   "options": "Contract Term"
-  },
-  {
-   "fieldname": "column_break_axgz",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "risk_3",
-   "fieldtype": "Select",
-   "label": "Risk 3",
-   "options": "\nHigh\nLow\nMedium"
-  },
-  {
-   "fieldname": "obligation_table_3_section",
-   "fieldtype": "Section Break",
-   "label": "Obligation Table 3"
-  },
-  {
-   "fieldname": "table_dhlt",
-   "fieldtype": "Table",
-   "options": "Contract Table 1"
-  },
-  {
-   "fieldname": "section_break_ygkp",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "term_4",
-   "fieldtype": "Link",
-   "label": "Term 4",
-   "options": "Contract Term"
-  },
-  {
-   "fieldname": "column_break_cmsb",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "risk_4",
-   "fieldtype": "Select",
-   "label": "Risk 4",
-   "options": "\nHigh\nLow\nMedium"
-  },
-  {
-   "fieldname": "obligation_4_section",
-   "fieldtype": "Section Break",
-   "label": "Obligation 4"
-  },
-  {
-   "fieldname": "table_mmyd",
    "fieldtype": "Table",
    "options": "Contract Table 1"
   },
@@ -240,7 +107,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-07-30 10:10:20.001686",
+ "modified": "2026-08-13 22:09:07.597351",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "Contract Compliance Tracker",

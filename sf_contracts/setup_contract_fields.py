@@ -14,7 +14,7 @@ def add_signed_contract_document_field():
 				"insert_after": "signed_on",
 				"allow_on_submit": 1,
 				"no_copy": 1,
-				"description": "Attach the final signed contract document.",
+				"description": "",
 			}
 		]
 	}
@@ -28,17 +28,24 @@ def add_contract_lifecycle_fields():
 	custom_fields = {
 		"Contract": [
 			{
+				"fieldname": "sf_contract_status_section",
+				"label": "Lifecycle & Health",
+				"fieldtype": "Section Break",
+				"insert_after": "party_full_name",
+				"allow_on_submit": 1,
+			},
+			{
 				"fieldname": "sf_contract_lifecycle_status",
 				"label": "Contract Lifecycle Status",
 				"fieldtype": "Select",
-				"options": "Draft\nActive\nExpired – Services Continuing\nClosed\nTerminated",
-				"default": "Draft",
-				"insert_after": "status",
+				"options": "Active\nExpired\nTerminated",
+				"default": "Active",
+				"insert_after": "sf_contract_status_section",
 				"allow_on_submit": 1,
 				"in_list_view": 1,
 				"in_standard_filter": 1,
 				"no_copy": 1,
-				"description": "Legal-facing contract lifecycle status used for contract tracking.",
+				"description": "",
 			},
 			{
 				"fieldname": "sf_completion_date",
@@ -46,14 +53,20 @@ def add_contract_lifecycle_fields():
 				"fieldtype": "Date",
 				"insert_after": "sf_contract_lifecycle_status",
 				"allow_on_submit": 1,
-				"depends_on": "eval:doc.sf_contract_lifecycle_status=='Closed'",
+				"depends_on": "eval:0",
 				"no_copy": 1,
+			},
+			{
+				"fieldname": "sf_contract_status_column",
+				"fieldtype": "Column Break",
+				"insert_after": "sf_termination_reason",
+				"allow_on_submit": 1,
 			},
 			{
 				"fieldname": "sf_termination_date",
 				"label": "Termination Date",
 				"fieldtype": "Date",
-				"insert_after": "sf_completion_date",
+				"insert_after": "sf_contract_status_column",
 				"allow_on_submit": 1,
 				"depends_on": "eval:doc.sf_contract_lifecycle_status=='Terminated'",
 				"no_copy": 1,
@@ -81,11 +94,13 @@ def migrate_contract_lifecycle_status_values():
 		return
 
 	status_map = {
-		"Pending": "Draft",
-		"Pending Execution": "Draft",
-		"Executed – Awaiting Commencement": "Draft",
-		"Expired": "Expired – Services Continuing",
-		"Completed": "Closed",
+		"Draft": "Active",
+		"Pending": "Active",
+		"Pending Execution": "Active",
+		"Executed – Awaiting Commencement": "Active",
+		"Expired – Services Continuing": "Expired",
+		"Completed": "Active",
+		"Closed": "Active",
 	}
 
 	for old_status, new_status in status_map.items():
@@ -107,29 +122,44 @@ def add_contract_business_fields():
 	"""Add SF Group business fields used for legal contract reporting."""
 	custom_fields = {
 		"Contract": [
+			{
+				"fieldname": "sf_legal_classification_section",
+				"label": "Legal Classification",
+				"fieldtype": "Section Break",
+				"insert_after": "party_full_name",
+				"is_system_generated": 0,
+				"allow_on_submit": 1,
+			},
 		{
 			"fieldname": "sf_contractor",
 			"label": "Contractor",
 			"fieldtype": "Link",
 			"options": "Contractor",
-			"insert_after": "party_name",
+			"insert_after": "sf_legal_classification_section",
 			"is_system_generated": 0,
 			"allow_on_submit": 1,
 				"in_list_view": 1,
 				"in_standard_filter": 1,
-				"description": "External contractor, supplier, customer, or counterparty name used for legal reporting.",
+				"description": "",
+			},
+			{
+				"fieldname": "sf_legal_classification_column",
+				"fieldtype": "Column Break",
+				"insert_after": "sf_contractor",
+				"is_system_generated": 0,
+				"allow_on_submit": 1,
 			},
 		{
 			"fieldname": "sf_contract_type",
 			"label": "Contract Type",
 			"fieldtype": "Link",
 			"options": "Contract Type",
-			"insert_after": "sf_contractor",
+			"insert_after": "sf_legal_classification_column",
 			"is_system_generated": 0,
 			"allow_on_submit": 1,
 				"in_list_view": 1,
 				"in_standard_filter": 1,
-				"description": "Business type/category of this contract, for example supply of Energy Meters.",
+				"description": "",
 			},
 			{
 				"fieldname": "sf_subsidiary_signee",
@@ -138,7 +168,7 @@ def add_contract_business_fields():
 				"insert_after": "signee",
 				"is_system_generated": 0,
 				"allow_on_submit": 1,
-				"description": "Name of the SF Group or subsidiary officer who signed the contract.",
+				"description": "",
 			},
 		]
 	}
@@ -163,7 +193,7 @@ def add_contract_health_fields():
 				"in_list_view": 1,
 				"in_standard_filter": 1,
 				"no_copy": 1,
-				"description": "Management traffic-light indicator calculated from signature, lifecycle, expiry, and compliance.",
+				"description": "",
 			},
 			{
 				"fieldname": "sf_contract_health_reason",
@@ -173,7 +203,7 @@ def add_contract_health_fields():
 				"read_only": 1,
 				"allow_on_submit": 1,
 				"no_copy": 1,
-				"description": "Main reason behind the calculated Contract Health Score.",
+				"description": "",
 			},
 		]
 	}
@@ -203,7 +233,7 @@ def add_contract_compliance_link_field():
 				"read_only": 1,
 				"allow_on_submit": 1,
 				"no_copy": 1,
-				"description": "Auto-created when Requires Fulfilment is checked.",
+				"description": "",
 			},
 		]
 	}
@@ -255,11 +285,27 @@ def sync_contract_field_order():
 		else:
 			field_order.append(fieldname)
 
-	move_after("sf_contractor", "party_name")
-	move_after("sf_contract_type", "sf_contractor")
-	move_after("sf_subsidiary_signee", "signee")
-	move_after("sf_contract_health_score", "sf_contract_lifecycle_status")
+	move_after("party_name", "party_type")
+	move_after("party_user", "party_name")
+	move_after("party_full_name", "party_user")
+	move_after("sf_legal_classification_section", "party_full_name")
+	move_after("sf_contractor", "sf_legal_classification_section")
+	move_after("sf_legal_classification_column", "sf_contractor")
+	move_after("sf_contract_type", "sf_legal_classification_column")
+	move_after("sf_contract_status_section", "sf_contract_type")
+	move_after("sf_contract_lifecycle_status", "sf_contract_status_section")
+	move_after("sf_completion_date", "sf_contract_lifecycle_status")
+	move_after("sf_contract_status_column", "sf_completion_date")
+	move_after("sf_contract_health_score", "sf_contract_status_column")
 	move_after("sf_contract_health_reason", "sf_contract_health_score")
+	move_after("sf_termination_date", "sf_contract_health_reason")
+	move_after("sf_termination_reason", "sf_termination_date")
+	move_after("submitted_for_signing", "sb_signee")
+	move_after("is_signed", "submitted_for_signing")
+	move_after("signee", "is_signed")
+	move_after("sf_subsidiary_signee", "signee")
+	move_after("signed_on", "sf_subsidiary_signee")
+	move_after("sf_signed_contract_document", "signed_on")
 	move_after("sf_compliance_section", "requires_fulfilment")
 	move_after("sf_compliance_tracker", "sf_compliance_section")
 
@@ -275,6 +321,31 @@ def sync_contract_field_order():
 	frappe.clear_cache(doctype="Contract")
 
 
+def clear_contract_custom_field_descriptions():
+	"""Remove helper text below app-added Contract fields for a cleaner legal form."""
+	fieldnames = (
+		"sf_signed_contract_document",
+		"sf_contract_lifecycle_status",
+		"sf_contractor",
+		"sf_contract_type",
+		"sf_subsidiary_signee",
+		"sf_contract_health_score",
+		"sf_contract_health_reason",
+		"sf_compliance_tracker",
+	)
+
+	for fieldname in fieldnames:
+		frappe.db.set_value(
+			"Custom Field",
+			{"dt": "Contract", "fieldname": fieldname},
+			"description",
+			"",
+			update_modified=False,
+		)
+
+	frappe.clear_cache(doctype="Contract")
+
+
 def setup_contract_customizations():
 	add_signed_contract_document_field()
 	add_contract_lifecycle_fields()
@@ -283,3 +354,4 @@ def setup_contract_customizations():
 	add_contract_compliance_link_field()
 	set_requires_fulfilment_always_enabled()
 	sync_contract_field_order()
+	clear_contract_custom_field_descriptions()

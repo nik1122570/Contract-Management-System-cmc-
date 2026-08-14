@@ -13,7 +13,7 @@
  "is_standard": 1,
  "label": "Critical Contracts",
  "method": "sf_contracts.contract_number_cards.critical_contracts",
- "modified": "2026-08-13 10:04:07.704872",
+ "modified": "2026-08-14 07:15:04.549940",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "Critical Contracts",

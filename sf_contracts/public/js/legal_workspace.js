@@ -1,5 +1,6 @@
 (function () {
-	const DASHBOARD_ID = "sf-legal-command-center";
+	const DASHBOARD_ID = "sf-legal-command-center-v2";
+	const LEGACY_DASHBOARD_IDS = ["sf-legal-command-center"];
 
 	const colors = {
 		green: "#08763d",
@@ -31,10 +32,13 @@
 	function render_legal_workspace_dashboard() {
 		if (!is_legal_workspace()) {
 			$(`#${DASHBOARD_ID}`).remove();
+			LEGACY_DASHBOARD_IDS.forEach((id) => $(`#${id}`).remove());
 			return;
 		}
 
 		const $target = get_workspace_target();
+		LEGACY_DASHBOARD_IDS.forEach((id) => $(`#${id}`).remove());
+
 		if (!$target.length || $(`#${DASHBOARD_ID}`).length) {
 			return;
 		}
@@ -94,7 +98,7 @@
 						<div class="sfw-compliance-tracker-visual"></div>
 					</div>
 					<div class="sfw-panel">
-						<div class="sfw-panel-title">Lifecycle Funnel</div>
+						<div class="sfw-panel-title">Contract Life Cycle</div>
 						<div class="sfw-lifecycle-funnel"></div>
 					</div>
 					<div class="sfw-panel">
@@ -107,12 +111,6 @@
 					</div>
 				</div>
 
-				<div class="sfw-grid">
-					<div class="sfw-panel">
-						<div class="sfw-panel-title">Unsigned / Pending Contracts</div>
-						<div data-watchlist="unsigned_pending"></div>
-					</div>
-				</div>
 			</div>
 		`;
 	}
@@ -136,14 +134,6 @@
 			false,
 			true
 		);
-		render_contract_list(
-			$('[data-watchlist="unsigned_pending"]'),
-			(data.watchlists || {}).unsigned_pending || [],
-			"No unsigned pending contracts.",
-			"days pending",
-			true
-		);
-
 		$(`#${DASHBOARD_ID} .sfw-new-contract`).on("click", () => frappe.new_doc("Contract"));
 	}
 
@@ -188,7 +178,7 @@
 		}
 
 		if (route_doctype === "Contract") {
-			frappe.route_options = { sf_contract_health_score: item.label };
+			frappe.route_options = item.route_options || { sf_contract_lifecycle_status: ["=", item.label] };
 			frappe.set_route("List", "Contract");
 			return;
 		}

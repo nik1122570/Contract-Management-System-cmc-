@@ -3,19 +3,15 @@ import frappe
 
 STATUS_LABELS = {
 	"total": "Total Contracts",
-	"pending": "Draft Contracts",
 	"active": "Active Contracts",
 	"terminated": "Terminated Contracts",
-	"expired": "Expired Services Continuing",
-	"completed": "Closed Contracts",
+	"expired": "Expired Contracts",
 }
 
 STATUS_VALUES = {
-	"pending": "Draft",
 	"active": "Active",
 	"terminated": "Terminated",
-	"expired": "Expired – Services Continuing",
-	"completed": "Closed",
+	"expired": "Expired",
 }
 HEALTH_VALUES = {
 	"critical": "Critical",
@@ -79,7 +75,7 @@ def total_contracts(filters=None):
 
 @frappe.whitelist()
 def pending_contracts(filters=None):
-	return _card_payload("pending")
+	return _card_payload("active")
 
 
 @frappe.whitelist()
@@ -99,7 +95,7 @@ def expired_contracts(filters=None):
 
 @frappe.whitelist()
 def completed_contracts(filters=None):
-	return _card_payload("completed")
+	return _card_payload("active")
 
 
 @frappe.whitelist()

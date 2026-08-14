@@ -14,14 +14,6 @@ CONTRACT_NUMBER_CARDS = [
 		"background_color": "#eaf4ff",
 	},
 	{
-		"name": "Pending Contracts",
-		"label": "Draft Contracts",
-		"status": "Draft",
-		"method": "sf_contracts.contract_number_cards.pending_contracts",
-		"color": "#b76b00",
-		"background_color": "#fff8e8",
-	},
-	{
 		"name": "Active Contracts",
 		"status": "Active",
 		"method": "sf_contracts.contract_number_cards.active_contracts",
@@ -37,19 +29,11 @@ CONTRACT_NUMBER_CARDS = [
 	},
 	{
 		"name": "Expired Contracts",
-		"label": "Expired Services Continuing",
-		"status": "Expired – Services Continuing",
+		"label": "Expired Contracts",
+		"status": "Expired",
 		"method": "sf_contracts.contract_number_cards.expired_contracts",
 		"color": "#b42318",
 		"background_color": "#fff0f0",
-	},
-	{
-		"name": "Completed Contracts",
-		"label": "Closed Contracts",
-		"status": "Closed",
-		"method": "sf_contracts.contract_number_cards.completed_contracts",
-		"color": "#005aa8",
-		"background_color": "#eaf4ff",
 	},
 	{
 		"name": "Critical Contracts",
@@ -96,7 +80,7 @@ def get_dashboard_block_html():
 			<div class="sfw-compliance-tracker-visual"></div>
 		</div>
 		<div class="sfw-panel sfw-panel-funnel">
-			<div class="sfw-panel-title">Lifecycle Funnel</div>
+			<div class="sfw-panel-title">Contract Life Cycle</div>
 			<div class="sfw-lifecycle-funnel"></div>
 		</div>
 		<div class="sfw-panel sfw-panel-expiry">
@@ -106,12 +90,6 @@ def get_dashboard_block_html():
 		<div class="sfw-panel sfw-panel-actions">
 			<div class="sfw-panel-title">Action Queue</div>
 			<div data-watchlist="contract_health"></div>
-		</div>
-	</div>
-	<div class="sfw-grid">
-		<div class="sfw-panel">
-			<div class="sfw-panel-title">Unsigned / Pending Contracts</div>
-			<div data-watchlist="unsigned_pending"></div>
 		</div>
 	</div>
 </div>
@@ -619,7 +597,7 @@ function openDonutSegment(routeDoctype, item) {
 	if (!item.count) return;
 
 	if (routeDoctype === "Contract") {
-		frappe.route_options = { sf_contract_health_score: item.label };
+		frappe.route_options = item.route_options || { sf_contract_lifecycle_status: ["=", item.label] };
 		frappe.set_route("List", "Contract");
 		return;
 	}
@@ -758,7 +736,6 @@ function renderPredictor(items) {
 
 function renderWatchlists(watchlists) {
 	renderContractList($root.find('[data-watchlist="contract_health"]'), watchlists.contract_health || [], "No critical contracts.", null, false, true);
-	renderContractList($root.find('[data-watchlist="unsigned_pending"]'), watchlists.unsigned_pending || [], "No unsigned pending contracts.", "days pending", true);
 }
 
 function renderContractList($target, contracts, emptyMessage, daysLabel, useDaysOpen, showHealthReason) {
@@ -908,6 +885,27 @@ def update_legal_workspace():
 			"link_to": "Contract Template",
 			"onboard": 0,
 		},
+		{
+			"type": "Card Break",
+			"label": "Reports",
+			"onboard": 0,
+		},
+		{
+			"type": "Link",
+			"label": "Contract Management Report",
+			"link_type": "Report",
+			"link_to": "Contract Management Report",
+			"is_query_report": 1,
+			"onboard": 0,
+		},
+		{
+			"type": "Link",
+			"label": "Compliance by Company Report",
+			"link_type": "Report",
+			"link_to": "Compliance by Company Report",
+			"is_query_report": 1,
+			"onboard": 0,
+		},
 	]:
 		workspace.append("links", link)
 
@@ -997,6 +995,12 @@ def update_legal_workspace():
 				"data": {"text": '<span class="h4"><b>Records</b></span>', "col": 12},
 			},
 			{"id": "sfcm_card_records", "type": "card", "data": {"card_name": "Records", "col": 4}},
+			{
+				"id": "sfcm_header_reports",
+				"type": "header",
+				"data": {"text": '<span class="h4"><b>Reports</b></span>', "col": 12},
+			},
+			{"id": "sfcm_card_reports", "type": "card", "data": {"card_name": "Reports", "col": 4}},
 		]
 	)
 

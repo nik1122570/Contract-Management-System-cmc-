@@ -1,8 +1,6 @@
 ﻿window.sfContractLifecycleColors = window.sfContractLifecycleColors || {
-	Draft: "gray",
 	Active: "green",
-	"Expired \u2013 Services Continuing": "red",
-	Closed: "blue",
+	Expired: "red",
 	Terminated: "red",
 };
 
@@ -10,7 +8,7 @@ frappe.listview_settings["Contract"] = {
 	add_fields: ["sf_contract_health_score"],
 
 	get_indicator(doc) {
-		const status = doc.sf_contract_lifecycle_status || "Draft";
+		const status = doc.sf_contract_lifecycle_status || "Active";
 		const color = window.sfContractLifecycleColors[status] || "gray";
 
 		return [__(status), color, `sf_contract_lifecycle_status,=,${status}`];
