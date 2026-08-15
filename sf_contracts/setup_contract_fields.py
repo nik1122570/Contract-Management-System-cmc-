@@ -4,9 +4,18 @@ from frappe.custom.doctype.property_setter.property_setter import make_property_
 
 
 def add_signed_contract_document_field():
-	"""Add the primary signed contract attachment field to ERPNext Contract."""
+	"""Add signing-related fields to ERPNext Contract."""
 	custom_fields = {
 		"Contract": [
+			{
+				"fieldname": "submitted_for_signing",
+				"label": "Submitted for Signing",
+				"fieldtype": "Check",
+				"insert_after": "sb_signee",
+				"allow_on_submit": 1,
+				"no_copy": 1,
+				"description": "",
+			},
 			{
 				"fieldname": "sf_signed_contract_document",
 				"label": "Signed Contract Document",
@@ -120,8 +129,27 @@ def migrate_contract_lifecycle_status_values():
 
 def add_contract_business_fields():
 	"""Add SF Group business fields used for legal contract reporting."""
-	custom_fields = {
-		"Contract": [
+	fields = []
+	meta = frappe.get_meta("Contract", cached=False)
+
+	if not meta.has_field("company"):
+		fields.append(
+			{
+				"fieldname": "company",
+				"label": "Company",
+				"fieldtype": "Link",
+				"options": "SF Companies",
+				"insert_after": "is_signed",
+				"is_system_generated": 0,
+				"allow_on_submit": 1,
+				"in_list_view": 1,
+				"in_standard_filter": 1,
+				"description": "",
+			}
+		)
+
+	fields.extend(
+		[
 			{
 				"fieldname": "sf_legal_classification_section",
 				"label": "Legal Classification",
@@ -171,10 +199,42 @@ def add_contract_business_fields():
 				"description": "",
 			},
 		]
-	}
+	)
 
-	create_custom_fields(custom_fields, update=True)
+	create_custom_fields({"Contract": fields}, update=True)
+	migrate_contract_company_values()
 	frappe.clear_cache(doctype="Contract")
+
+
+def migrate_contract_company_values():
+	"""Move values from a manually-created Company field into the stable fieldname."""
+	if not frappe.db.has_column("Contract", "company"):
+		return
+
+	for source_field in get_legacy_company_fields():
+		if source_field == "company" or not frappe.db.has_column("Contract", source_field):
+			continue
+
+		frappe.db.sql(
+			f"""
+			update `tabContract`
+			set company = `{source_field}`
+			where ifnull(company, '') = ''
+				and ifnull(`{source_field}`, '') != ''
+			"""
+		)
+
+
+def get_legacy_company_fields():
+	meta = frappe.get_meta("Contract", cached=False)
+	return [
+		df.fieldname
+		for df in meta.fields
+		if df.fieldname
+		and df.fieldtype == "Link"
+		and df.options == "SF Companies"
+		and (df.label or "").strip().lower() in {"company", "sf company", "entity", "entity / company"}
+	]
 
 
 def add_contract_health_fields():
@@ -302,7 +362,8 @@ def sync_contract_field_order():
 	move_after("sf_termination_reason", "sf_termination_date")
 	move_after("submitted_for_signing", "sb_signee")
 	move_after("is_signed", "submitted_for_signing")
-	move_after("signee", "is_signed")
+	move_after("company", "is_signed")
+	move_after("signee", "company")
 	move_after("sf_subsidiary_signee", "signee")
 	move_after("signed_on", "sf_subsidiary_signee")
 	move_after("sf_signed_contract_document", "signed_on")
@@ -357,6 +418,8 @@ def clear_contract_custom_field_descriptions():
 	"""Remove helper text below app-added Contract fields for a cleaner legal form."""
 	fieldnames = (
 		"sf_signed_contract_document",
+		"submitted_for_signing",
+		"company",
 		"sf_contract_lifecycle_status",
 		"sf_contractor",
 		"sf_contract_type",

@@ -24,3 +24,4 @@ sf_contracts.patches.simplify_contract_lifecycle_statuses
 sf_contracts.patches.allow_monthly_compliance_trackers
 sf_contracts.patches.tidy_contract_form_layout
 sf_contracts.patches.tidy_contract_list_view
+sf_contracts.patches.ensure_contract_live_custom_fields
