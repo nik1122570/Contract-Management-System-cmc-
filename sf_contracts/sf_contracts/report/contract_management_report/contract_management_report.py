@@ -27,6 +27,7 @@ def execute(filters=None):
 def get_contracts(filters):
 	conditions = []
 	values = {}
+	company_field = get_contract_company_field()
 
 	if filters.get("lifecycle_status"):
 		conditions.append("c.sf_contract_lifecycle_status = %(lifecycle_status)s")
@@ -44,9 +45,11 @@ def get_contracts(filters):
 		conditions.append("c.party_name like %(party_name)s")
 		values["party_name"] = f"%{filters.party_name}%"
 
-	if filters.get("company"):
-		conditions.append("c.company = %(company)s")
+	if filters.get("company") and company_field:
+		conditions.append(f"c.`{company_field}` = %(company)s")
 		values["company"] = filters.company
+	elif filters.get("company"):
+		conditions.append("1 = 0")
 
 	if filters.get("contractor"):
 		conditions.append("c.sf_contractor = %(contractor)s")
@@ -70,12 +73,13 @@ def get_contracts(filters):
 		values["expiry_limit"] = add_days(nowdate(), filters.expiry_within_days)
 
 	where_clause = " where " + " and ".join(conditions) if conditions else ""
+	company_select = f"c.`{company_field}` as company" if company_field else "'' as company"
 
 	return frappe.db.sql(
 		f"""
 		select
 			c.name,
-			c.company,
+			{company_select},
 			c.party_type,
 			c.party_name,
 			c.sf_contractor,
@@ -110,6 +114,28 @@ def get_contracts(filters):
 		values,
 		as_dict=True,
 	)
+
+
+def get_contract_company_field():
+	"""Return the Contract field used for SF company/entity, if available.
+
+	Some sites have a manually-created Link field labelled Company, for example
+	`link_abmz`, instead of a database column named `company`.
+	"""
+	if frappe.db.has_column("Contract", "company"):
+		return "company"
+
+	meta = frappe.get_meta("Contract")
+	for df in meta.fields:
+		if (
+			df.fieldtype == "Link"
+			and df.options == "SF Companies"
+			and (df.label or "").strip().lower() in {"company", "sf company", "entity", "entity / company"}
+			and frappe.db.has_column("Contract", df.fieldname)
+		):
+			return df.fieldname
+
+	return None
 
 
 def get_detail_columns():
