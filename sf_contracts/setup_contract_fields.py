@@ -13,6 +13,7 @@ def add_signed_contract_document_field():
 				"fieldtype": "Check",
 				"insert_after": "sb_signee",
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 				"no_copy": 1,
 				"description": "",
 			},
@@ -22,6 +23,7 @@ def add_signed_contract_document_field():
 				"fieldtype": "Attach",
 				"insert_after": "signed_on",
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 				"no_copy": 1,
 				"description": "",
 			}
@@ -42,6 +44,7 @@ def add_contract_lifecycle_fields():
 				"fieldtype": "Section Break",
 				"insert_after": "party_full_name",
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 			},
 			{
 				"fieldname": "sf_contract_lifecycle_status",
@@ -51,6 +54,7 @@ def add_contract_lifecycle_fields():
 				"default": "Active",
 				"insert_after": "sf_contract_status_section",
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 				"in_list_view": 1,
 				"in_standard_filter": 1,
 				"no_copy": 1,
@@ -62,6 +66,7 @@ def add_contract_lifecycle_fields():
 				"fieldtype": "Date",
 				"insert_after": "sf_contract_lifecycle_status",
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 				"depends_on": "eval:0",
 				"no_copy": 1,
 			},
@@ -70,6 +75,7 @@ def add_contract_lifecycle_fields():
 				"fieldtype": "Column Break",
 				"insert_after": "sf_termination_reason",
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 			},
 			{
 				"fieldname": "sf_termination_date",
@@ -77,6 +83,7 @@ def add_contract_lifecycle_fields():
 				"fieldtype": "Date",
 				"insert_after": "sf_contract_status_column",
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 				"depends_on": "eval:doc.sf_contract_lifecycle_status=='Terminated'",
 				"no_copy": 1,
 			},
@@ -86,6 +93,7 @@ def add_contract_lifecycle_fields():
 				"fieldtype": "Small Text",
 				"insert_after": "sf_termination_date",
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 				"depends_on": "eval:doc.sf_contract_lifecycle_status=='Terminated'",
 				"no_copy": 1,
 			},
@@ -140,7 +148,7 @@ def add_contract_business_fields():
 				"fieldtype": "Link",
 				"options": "SF Companies",
 				"insert_after": "is_signed",
-				"is_system_generated": 0,
+				"is_system_generated": 1,
 				"allow_on_submit": 1,
 				"in_list_view": 1,
 				"in_standard_filter": 1,
@@ -155,7 +163,7 @@ def add_contract_business_fields():
 				"label": "Legal Classification",
 				"fieldtype": "Section Break",
 				"insert_after": "party_full_name",
-				"is_system_generated": 0,
+				"is_system_generated": 1,
 				"allow_on_submit": 1,
 			},
 		{
@@ -164,7 +172,7 @@ def add_contract_business_fields():
 			"fieldtype": "Link",
 			"options": "Contractor",
 			"insert_after": "sf_legal_classification_section",
-			"is_system_generated": 0,
+			"is_system_generated": 1,
 			"allow_on_submit": 1,
 				"in_list_view": 0,
 				"in_standard_filter": 1,
@@ -174,7 +182,7 @@ def add_contract_business_fields():
 				"fieldname": "sf_legal_classification_column",
 				"fieldtype": "Column Break",
 				"insert_after": "sf_contractor",
-				"is_system_generated": 0,
+				"is_system_generated": 1,
 				"allow_on_submit": 1,
 			},
 		{
@@ -183,7 +191,7 @@ def add_contract_business_fields():
 			"fieldtype": "Link",
 			"options": "Contract Type",
 			"insert_after": "sf_legal_classification_column",
-			"is_system_generated": 0,
+			"is_system_generated": 1,
 			"allow_on_submit": 1,
 				"in_list_view": 1,
 				"in_standard_filter": 1,
@@ -194,7 +202,7 @@ def add_contract_business_fields():
 				"label": "Subsidiary Signee",
 				"fieldtype": "Data",
 				"insert_after": "signee",
-				"is_system_generated": 0,
+				"is_system_generated": 1,
 				"allow_on_submit": 1,
 				"description": "",
 			},
@@ -237,6 +245,48 @@ def get_legacy_company_fields():
 	]
 
 
+def protect_contract_custom_fields():
+	"""Mark app-managed Contract Custom Fields as system generated.
+
+	This keeps Customize Form from trying to delete them when a non-Administrator
+	user saves layout changes.
+	"""
+	fieldnames = (
+		"submitted_for_signing",
+		"sf_signed_contract_document",
+		"company",
+		"sf_legal_classification_section",
+		"sf_contractor",
+		"sf_legal_classification_column",
+		"sf_contract_type",
+		"sf_subsidiary_signee",
+		"sf_contract_status_section",
+		"sf_contract_lifecycle_status",
+		"sf_completion_date",
+		"sf_contract_status_column",
+		"sf_termination_date",
+		"sf_termination_reason",
+		"sf_contract_health_score",
+		"sf_contract_health_reason",
+		"sf_compliance_section",
+		"sf_compliance_tracker",
+	)
+
+	for custom_field in frappe.get_all(
+		"Custom Field",
+		filters={"dt": "Contract", "fieldname": ["in", fieldnames]},
+		pluck="name",
+	):
+		frappe.db.set_value(
+			"Custom Field",
+			custom_field,
+			"is_system_generated",
+			1,
+			update_modified=False,
+		)
+	frappe.clear_cache(doctype="Contract")
+
+
 def add_contract_health_fields():
 	"""Add a management-facing health indicator to ERPNext Contract."""
 	custom_fields = {
@@ -250,6 +300,7 @@ def add_contract_health_fields():
 				"insert_after": "sf_contract_lifecycle_status",
 				"read_only": 1,
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 				"in_list_view": 0,
 				"in_standard_filter": 1,
 				"no_copy": 1,
@@ -262,6 +313,7 @@ def add_contract_health_fields():
 				"insert_after": "sf_contract_health_score",
 				"read_only": 1,
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 				"no_copy": 1,
 				"description": "",
 			},
@@ -283,6 +335,7 @@ def add_contract_compliance_link_field():
 				"insert_after": "requires_fulfilment",
 				"collapsible": 1,
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 			},
 			{
 				"fieldname": "sf_compliance_tracker",
@@ -292,6 +345,7 @@ def add_contract_compliance_link_field():
 				"insert_after": "sf_compliance_section",
 				"read_only": 1,
 				"allow_on_submit": 1,
+				"is_system_generated": 1,
 				"no_copy": 1,
 				"description": "",
 			},
@@ -447,6 +501,7 @@ def setup_contract_customizations():
 	add_contract_business_fields()
 	add_contract_health_fields()
 	add_contract_compliance_link_field()
+	protect_contract_custom_fields()
 	set_requires_fulfilment_always_enabled()
 	sync_contract_field_order()
 	set_contract_list_view_fields()

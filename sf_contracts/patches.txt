@@ -25,3 +25,4 @@ sf_contracts.patches.allow_monthly_compliance_trackers
 sf_contracts.patches.tidy_contract_form_layout
 sf_contracts.patches.tidy_contract_list_view
 sf_contracts.patches.ensure_contract_live_custom_fields
+sf_contracts.patches.protect_contract_custom_fields
