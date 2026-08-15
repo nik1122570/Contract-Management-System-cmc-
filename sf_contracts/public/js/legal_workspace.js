@@ -9,18 +9,47 @@
 		blue: "#005aa8",
 		gray: "#667085",
 	};
+	let render_timer = null;
+	let observer_started = false;
 
 	frappe.router.on("change", () => {
-		setTimeout(render_legal_workspace_dashboard, 450);
+		schedule_legal_workspace_render();
 	});
 
 	$(document).on("workspace_refresh", () => {
-		setTimeout(render_legal_workspace_dashboard, 450);
+		schedule_legal_workspace_render();
 	});
 
 	$(document).ready(() => {
-		setTimeout(render_legal_workspace_dashboard, 900);
+		start_workspace_observer();
+		schedule_legal_workspace_render();
 	});
+
+	function schedule_legal_workspace_render(attempt = 0) {
+		clearTimeout(render_timer);
+		render_timer = setTimeout(() => {
+			const rendered = render_legal_workspace_dashboard();
+
+			if (!rendered && is_legal_workspace() && attempt < 12) {
+				schedule_legal_workspace_render(attempt + 1);
+			}
+		}, attempt ? 350 : 100);
+	}
+
+	function start_workspace_observer() {
+		if (observer_started || !document.body) {
+			return;
+		}
+
+		observer_started = true;
+		const observer = new MutationObserver(() => {
+			if (is_legal_workspace() && !$(`#${DASHBOARD_ID}`).length) {
+				schedule_legal_workspace_render();
+			}
+		});
+
+		observer.observe(document.body, { childList: true, subtree: true });
+	}
 
 	function is_legal_workspace() {
 		const route = (frappe.get_route() || []).map((part) => String(part).toLowerCase());
@@ -33,14 +62,18 @@
 		if (!is_legal_workspace()) {
 			$(`#${DASHBOARD_ID}`).remove();
 			LEGACY_DASHBOARD_IDS.forEach((id) => $(`#${id}`).remove());
-			return;
+			return true;
 		}
 
 		const $target = get_workspace_target();
 		LEGACY_DASHBOARD_IDS.forEach((id) => $(`#${id}`).remove());
 
-		if (!$target.length || $(`#${DASHBOARD_ID}`).length) {
-			return;
+		if ($(`#${DASHBOARD_ID}`).length) {
+			return true;
+		}
+
+		if (!$target.length) {
+			return false;
 		}
 
 		inject_styles();
@@ -53,6 +86,8 @@
 				render_visuals(data);
 			},
 		});
+
+		return true;
 	}
 
 	function get_workspace_target() {
