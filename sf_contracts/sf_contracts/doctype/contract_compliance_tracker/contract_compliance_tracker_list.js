@@ -1,5 +1,6 @@
 frappe.listview_settings["Contract Compliance Tracker"] = {
-	add_fields: ["compliance_percentage", "contract_type", "contractor"],
+	add_fields: ["contract", "company", "party_name", "contract_type", "compliance_percentage"],
+	hide_name_column: true,
 
 	formatters: {
 		compliance_percentage(value) {
