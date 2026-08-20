@@ -34,6 +34,31 @@ def add_signed_contract_document_field():
 	frappe.clear_cache(doctype="Contract")
 
 
+def add_contract_party_compatibility_fields():
+	"""Restore fields that ERPNext Contract controller expects on some v15 sites."""
+	custom_fields = {"Contract": []}
+	meta = frappe.get_meta("Contract", cached=False)
+
+	if not meta.has_field("party_full_name"):
+		custom_fields["Contract"].append(
+			{
+				"fieldname": "party_full_name",
+				"label": "Party Full Name",
+				"fieldtype": "Data",
+				"insert_after": "party_name",
+				"read_only": 1,
+				"allow_on_submit": 1,
+				"is_system_generated": 1,
+				"no_copy": 1,
+				"description": "",
+			}
+		)
+
+	if custom_fields["Contract"]:
+		create_custom_fields(custom_fields, update=True)
+		frappe.clear_cache(doctype="Contract")
+
+
 def add_contract_lifecycle_fields():
 	"""Add Legal-facing lifecycle fields to ERPNext Contract."""
 	custom_fields = {
@@ -474,6 +499,7 @@ def clear_contract_custom_field_descriptions():
 		"sf_signed_contract_document",
 		"submitted_for_signing",
 		"company",
+		"party_full_name",
 		"sf_contract_lifecycle_status",
 		"sf_contractor",
 		"sf_contract_type",
@@ -496,6 +522,7 @@ def clear_contract_custom_field_descriptions():
 
 
 def setup_contract_customizations():
+	add_contract_party_compatibility_fields()
 	add_signed_contract_document_field()
 	add_contract_lifecycle_fields()
 	add_contract_business_fields()
