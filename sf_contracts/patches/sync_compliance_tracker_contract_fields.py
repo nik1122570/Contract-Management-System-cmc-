@@ -5,9 +5,6 @@ def execute():
 	if not frappe.db.has_column("Contract Compliance Tracker", "contract_type"):
 		return
 
-	if not frappe.db.has_column("Contract Compliance Tracker", "contractor"):
-		return
-
 	for tracker in frappe.get_all("Contract Compliance Tracker", fields=["name", "contract"]):
 		if not tracker.contract:
 			continue
@@ -15,7 +12,7 @@ def execute():
 		contract_values = frappe.db.get_value(
 			"Contract",
 			tracker.contract,
-			["sf_contract_type", "sf_contractor"],
+			["sf_contract_type"],
 			as_dict=True,
 		)
 
@@ -27,7 +24,6 @@ def execute():
 			tracker.name,
 			{
 				"contract_type": contract_values.get("sf_contract_type"),
-				"contractor": contract_values.get("sf_contractor"),
 			},
 			update_modified=False,
 		)

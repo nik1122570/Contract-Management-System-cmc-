@@ -667,7 +667,7 @@ function renderComplianceHeatmap(items) {
 		const $row = $(`
 			<button class="sfw-heatmap-row" data-tracker="${escapeHTML(item.name)}">
 				<span class="sfw-heatmap-main">
-					<strong>${escapeHTML(item.contractor)}</strong>
+					<strong>${escapeHTML(item.party_name)}</strong>
 					<span class="text-muted">${escapeHTML(item.contract)}</span>
 				</span>
 				<span class="sfw-heatmap-meta">${escapeHTML(item.contract_type)}</span>

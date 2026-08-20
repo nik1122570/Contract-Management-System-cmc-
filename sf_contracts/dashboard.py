@@ -265,7 +265,7 @@ def _build_compliance_heatmap():
 		fields=[
 			"name",
 			"contract",
-			"contractor",
+			"party_name",
 			"contract_type",
 			"compliance_percentage",
 		],
@@ -286,7 +286,7 @@ def _build_compliance_heatmap():
 			{
 				"name": tracker.name,
 				"contract": tracker.contract,
-				"contractor": tracker.contractor or "Not Set",
+				"party_name": tracker.party_name or "Not Set",
 				"contract_type": tracker.contract_type or "Not Set",
 				"percentage": percentage,
 				"color": color,

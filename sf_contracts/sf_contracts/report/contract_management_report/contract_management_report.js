@@ -43,12 +43,6 @@ frappe.query_reports["Contract Management Report"] = {
 			options: "SF Companies",
 		},
 		{
-			fieldname: "contractor",
-			label: __("Contractor"),
-			fieldtype: "Link",
-			options: "Contractor",
-		},
-		{
 			fieldname: "contract_type",
 			label: __("Contract Type"),
 			fieldtype: "Link",

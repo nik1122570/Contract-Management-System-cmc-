@@ -127,7 +127,6 @@ def ensure_sample_contract():
 	contract.party_type = "Customer"
 	contract.party_name = SAMPLE_PARTY
 	contract.party_full_name = SAMPLE_PARTY
-	contract.sf_contractor = SAMPLE_CONTRACTOR
 	contract.sf_contract_type = SAMPLE_CONTRACT_TYPE
 	contract.start_date = "2026-01-01"
 	contract.end_date = "2026-12-31"
@@ -152,7 +151,6 @@ def ensure_sample_tracker(contract_name):
 	tracker.evaluation_date = nowdate()
 	tracker.party_name = SAMPLE_PARTY
 	tracker.contract_type = SAMPLE_CONTRACT_TYPE
-	tracker.contractor = SAMPLE_CONTRACTOR
 
 	for obligation in SAMPLE_OBLIGATIONS:
 		tracker.append("table_ewpx", obligation)

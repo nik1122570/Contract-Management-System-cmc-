@@ -26,7 +26,7 @@ class ContractComplianceTracker(Document):
 		contract_values = frappe.db.get_value(
 			"Contract",
 			self.contract,
-			["sf_contract_type", "sf_contractor"],
+			["sf_contract_type"],
 			as_dict=True,
 		)
 
@@ -34,7 +34,6 @@ class ContractComplianceTracker(Document):
 			return
 
 		self.contract_type = contract_values.get("sf_contract_type")
-		self.contractor = contract_values.get("sf_contractor")
 
 	def set_compliance_percentage(self):
 		total = 0
@@ -112,7 +111,6 @@ def create_next_month_tracker(source_name):
 	target.evaluation_date = next_evaluation_date
 	target.party_name = source.party_name
 	target.contract_type = source.contract_type
-	target.contractor = source.contractor
 
 	for row in source.get("table_ewpx") or []:
 		target.append(

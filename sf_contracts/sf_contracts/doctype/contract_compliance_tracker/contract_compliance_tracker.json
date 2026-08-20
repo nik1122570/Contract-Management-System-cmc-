@@ -15,7 +15,6 @@
   "compliance_percentage",
   "column_break_1",
   "naming_series",
-  "contractor",
   "section_break_yalf",
   "sf_compliance_dashboard",
   "section_break_dnja",
@@ -96,16 +95,6 @@
    "in_standard_filter": 1,
    "label": "Contract Type",
    "options": "Contract Type"
-  },
-  {
-   "bold": 1,
-   "fetch_from": "contract.sf_contractor",
-   "fieldname": "contractor",
-   "fieldtype": "Link",
-   "in_list_view": 0,
-   "in_standard_filter": 1,
-   "label": "Contractor",
-   "options": "Contractor"
   },
   {
    "bold": 1,

@@ -75,7 +75,6 @@ def ensure_contract_compliance_tracker(doc, method=None):
 	_set_if_field_exists(tracker, "party_type", doc.get("party_type"))
 	_set_if_field_exists(tracker, "party_name", doc.get("party_name"))
 	_set_if_field_exists(tracker, "contract_type", doc.get("sf_contract_type"))
-	_set_if_field_exists(tracker, "contractor", doc.get("sf_contractor"))
 	tracker.insert(ignore_permissions=True)
 
 	_update_tracker_counts(tracker.name)

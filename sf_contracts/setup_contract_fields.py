@@ -191,22 +191,10 @@ def add_contract_business_fields():
 				"is_system_generated": 1,
 				"allow_on_submit": 1,
 			},
-		{
-			"fieldname": "sf_contractor",
-			"label": "Contractor",
-			"fieldtype": "Link",
-			"options": "Contractor",
-			"insert_after": "sf_legal_classification_section",
-			"is_system_generated": 1,
-			"allow_on_submit": 1,
-				"in_list_view": 0,
-				"in_standard_filter": 1,
-				"description": "",
-			},
 			{
 				"fieldname": "sf_legal_classification_column",
 				"fieldtype": "Column Break",
-				"insert_after": "sf_contractor",
+				"insert_after": "sf_legal_classification_section",
 				"is_system_generated": 1,
 				"allow_on_submit": 1,
 			},
@@ -281,7 +269,6 @@ def protect_contract_custom_fields():
 		"sf_signed_contract_document",
 		"company",
 		"sf_legal_classification_section",
-		"sf_contractor",
 		"sf_legal_classification_column",
 		"sf_contract_type",
 		"sf_subsidiary_signee",
@@ -428,8 +415,7 @@ def sync_contract_field_order():
 	move_after("party_user", "party_name")
 	move_after("party_full_name", "party_user")
 	move_after("sf_legal_classification_section", "party_full_name")
-	move_after("sf_contractor", "sf_legal_classification_section")
-	move_after("sf_legal_classification_column", "sf_contractor")
+	move_after("sf_legal_classification_column", "sf_legal_classification_section")
 	move_after("sf_contract_type", "sf_legal_classification_column")
 	move_after("sf_contract_status_section", "sf_contract_type")
 	move_after("sf_contract_lifecycle_status", "sf_contract_status_section")
@@ -472,7 +458,6 @@ def set_contract_list_view_fields():
 	hidden_fields = {
 		"party_name",
 		"status",
-		"sf_contractor",
 		"sf_contract_health_score",
 		"fulfilment_status",
 		"signed_on",
@@ -501,7 +486,6 @@ def clear_contract_custom_field_descriptions():
 		"company",
 		"party_full_name",
 		"sf_contract_lifecycle_status",
-		"sf_contractor",
 		"sf_contract_type",
 		"sf_subsidiary_signee",
 		"sf_contract_health_score",

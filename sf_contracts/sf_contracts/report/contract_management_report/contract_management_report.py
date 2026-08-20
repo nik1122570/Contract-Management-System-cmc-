@@ -51,10 +51,6 @@ def get_contracts(filters):
 	elif filters.get("company"):
 		conditions.append("1 = 0")
 
-	if filters.get("contractor"):
-		conditions.append("c.sf_contractor = %(contractor)s")
-		values["contractor"] = filters.contractor
-
 	if filters.get("contract_type"):
 		conditions.append("c.sf_contract_type = %(contract_type)s")
 		values["contract_type"] = filters.contract_type
@@ -82,7 +78,6 @@ def get_contracts(filters):
 			{company_select},
 			c.party_type,
 			c.party_name,
-			c.sf_contractor,
 			c.sf_contract_type,
 			c.sf_contract_lifecycle_status,
 			c.sf_contract_health_score,
@@ -142,8 +137,7 @@ def get_detail_columns():
 	return [
 		{"label": _("Contract"), "fieldname": "name", "fieldtype": "Link", "options": "Contract", "width": 180},
 		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "SF Companies", "width": 190},
-		{"label": _("Party"), "fieldname": "party_name", "fieldtype": "Data", "width": 180},
-		{"label": _("Contractor"), "fieldname": "sf_contractor", "fieldtype": "Link", "options": "Contractor", "width": 160},
+		{"label": _("Party B"), "fieldname": "party_name", "fieldtype": "Data", "width": 180},
 		{"label": _("Contract Type"), "fieldname": "sf_contract_type", "fieldtype": "Link", "options": "Contract Type", "width": 150},
 		{"label": _("Lifecycle Status"), "fieldname": "sf_contract_lifecycle_status", "fieldtype": "Data", "width": 170},
 		{"label": _("Health"), "fieldname": "sf_contract_health_score", "fieldtype": "Data", "width": 130},

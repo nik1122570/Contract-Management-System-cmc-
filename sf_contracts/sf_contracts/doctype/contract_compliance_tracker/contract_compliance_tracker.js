@@ -48,13 +48,12 @@ function sync_contract_fields(frm) {
 	if (!frm.doc.contract) {
 		frm.set_value({
 			contract_type: "",
-			contractor: "",
 		});
 		return;
 	}
 
 	frappe.db
-		.get_value("Contract", frm.doc.contract, ["sf_contract_type", "sf_contractor"])
+		.get_value("Contract", frm.doc.contract, ["sf_contract_type"])
 		.then(({ message }) => {
 			if (!message) {
 				return;
@@ -62,7 +61,6 @@ function sync_contract_fields(frm) {
 
 			frm.set_value({
 				contract_type: message.sf_contract_type || "",
-				contractor: message.sf_contractor || "",
 			});
 		});
 }

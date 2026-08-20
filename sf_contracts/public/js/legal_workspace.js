@@ -279,7 +279,7 @@
 			const $row = $(`
 				<button class="sfw-heatmap-row" data-tracker="${escape_html(item.name)}">
 					<span class="sfw-heatmap-main">
-						<strong>${escape_html(item.contractor)}</strong>
+						<strong>${escape_html(item.party_name)}</strong>
 						<span class="text-muted">${escape_html(item.contract)}</span>
 					</span>
 					<span class="sfw-heatmap-meta">${escape_html(item.contract_type)}</span>
