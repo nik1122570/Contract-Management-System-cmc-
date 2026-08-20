@@ -1,9 +1,53 @@
 import frappe
+from frappe import _
 from frappe.utils import nowdate
 
 
 def validate_contract_compliance_requirements(doc, method=None):
-	return
+	if not getattr(doc, "requires_fulfilment", 0):
+		return
+
+	tracker_name = get_contract_compliance_tracker(doc)
+	if not tracker_name:
+		tracker_name = ensure_contract_compliance_tracker(doc)
+
+	tracker_link = frappe.utils.get_link_to_form("Contract Compliance Tracker", tracker_name)
+	tracker = frappe.get_doc("Contract Compliance Tracker", tracker_name)
+	rows = tracker.get("table_ewpx") or []
+
+	if not rows:
+		frappe.throw(
+			_(
+				"Please fill the Compliance Tracker {0} before submitting this Contract. Add at least one compliance obligation."
+			).format(tracker_link),
+			title=_("Compliance Tracker Required"),
+		)
+
+	missing_rows = []
+	required_fields = {
+		"terms": _("Terms"),
+		"contractual_obligation": _("Contractual Obligation"),
+		"responsible_person": _("Responsible Person"),
+		"evidence_required": _("Evidence Required"),
+		"compliance_status": _("Compliance Status"),
+	}
+
+	for row in rows:
+		missing = [
+			label
+			for fieldname, label in required_fields.items()
+			if not (row.get(fieldname) or "").strip()
+		]
+		if missing:
+			missing_rows.append(_("Row {0}: {1}").format(row.idx, ", ".join(missing)))
+
+	if missing_rows:
+		frappe.throw(
+			_(
+				"Please complete the Compliance Tracker {0} before submitting this Contract.<br><br>{1}"
+			).format(tracker_link, "<br>".join(missing_rows)),
+			title=_("Incomplete Compliance Tracker"),
+		)
 
 
 def ensure_contract_compliance_tracker(doc, method=None):
@@ -46,6 +90,19 @@ def ensure_contract_compliance_tracker(doc, method=None):
 		)
 
 	return tracker.name
+
+
+def get_contract_compliance_tracker(doc):
+	tracker_name = doc.get("sf_compliance_tracker")
+	if tracker_name and frappe.db.exists("Contract Compliance Tracker", tracker_name):
+		return tracker_name
+
+	return frappe.db.get_value(
+		"Contract Compliance Tracker",
+		{"contract": doc.name},
+		"name",
+		order_by="evaluation_date desc, creation desc",
+	)
 
 
 def _set_if_field_exists(doc, fieldname, value):

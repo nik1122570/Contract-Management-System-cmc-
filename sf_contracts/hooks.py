@@ -144,6 +144,7 @@ doc_events = {
 			"sf_contracts.contract_lifecycle.update_contract_lifecycle_status",
 		],
 		"on_update": "sf_contracts.contract_compliance.ensure_contract_compliance_tracker",
+		"before_submit": "sf_contracts.contract_compliance.validate_contract_compliance_requirements",
 		"before_update_after_submit": "sf_contracts.contract_lifecycle.update_contract_lifecycle_status",
 		"on_update_after_submit": "sf_contracts.contract_compliance.ensure_contract_compliance_tracker",
 	}
