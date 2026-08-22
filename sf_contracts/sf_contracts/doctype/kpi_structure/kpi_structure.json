@@ -2,12 +2,12 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "Prompt",
- "creation": "2026-08-22 00:00:00.000000",
+ "creation": "2026-08-22 00:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "designation",
   "company",
+  "designation",
   "version",
   "status",
   "column_dates",
@@ -15,8 +15,9 @@
   "effective_to",
   "total_weight",
   "rating_scale",
-  "instructions",
-  "components"
+  "section_break_pgpu",
+  "components",
+  "amended_from"
  ],
  "fields": [
   {
@@ -78,15 +79,10 @@
    "read_only": 1
   },
   {
-   "default": "SF Standard 0-100",
+   "default": " 0-100",
    "fieldname": "rating_scale",
    "fieldtype": "Data",
    "label": "Rating Scale"
-  },
-  {
-   "fieldname": "instructions",
-   "fieldtype": "Text Editor",
-   "label": "Instructions"
   },
   {
    "fieldname": "components",
@@ -94,15 +90,30 @@
    "label": "Components",
    "options": "KPI Structure Item",
    "reqd": 1
+  },
+  {
+   "fieldname": "section_break_pgpu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "KPI Structure",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-08-22 00:00:00.000000",
+ "modified": "2026-08-22 21:14:57.910551",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "KPI Structure",
+ "naming_rule": "Set by user",
  "owner": "Administrator",
  "permissions": [
   {
@@ -143,6 +154,7 @@
    "role": "KPI Final Reviewer"
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

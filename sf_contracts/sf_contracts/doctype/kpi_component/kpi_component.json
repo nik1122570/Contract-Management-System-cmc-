@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "field:objective",
- "creation": "2026-08-22 00:00:00.000000",
+ "creation": "2026-08-22 00:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -22,7 +22,6 @@
   "default_target_value",
   "default_target_value_2",
   "evidence_required",
-  "instructions",
   "scoring_bands"
  ],
  "fields": [
@@ -133,11 +132,6 @@
    "label": "Evidence Required"
   },
   {
-   "fieldname": "instructions",
-   "fieldtype": "Small Text",
-   "label": "Instructions"
-  },
-  {
    "fieldname": "scoring_bands",
    "fieldtype": "Table",
    "label": "Scoring Bands",
@@ -146,7 +140,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-22 00:00:00.000000",
+ "modified": "2026-08-22 20:24:52.714709",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "KPI Component",
@@ -185,6 +179,7 @@
    "role": "KPI Final Reviewer"
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

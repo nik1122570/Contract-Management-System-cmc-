@@ -2,30 +2,33 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "KSA-.YYYY.-.#####",
- "creation": "2026-08-22 00:00:00.000000",
+ "creation": "2026-08-22 00:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "employee",
-  "employee_name",
-  "employee_user",
+  "employee_details_section",
   "company",
-  "department",
+  "employee_name",
   "designation",
+  "column_break_wgby",
+  "posting_date",
+  "employee",
+  "department",
   "section_structure",
   "kpi_structure",
-  "structure_version",
-  "structure_designation",
-  "structure_company",
-  "section_dates",
-  "start_date",
   "end_date",
+  "column_break_jyda",
+  "start_date",
   "review_frequency",
+  "section_dates",
   "calendar_basis",
+  "status",
+  "column_break_zekf",
   "self_rating_due_days",
   "final_rating_due_days",
-  "status",
-  "target_overrides"
+  "section_break_rhbs",
+  "target_overrides",
+  "amended_from"
  ],
  "fields": [
   {
@@ -43,14 +46,6 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Employee Name",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "employee.user_id",
-   "fieldname": "employee_user",
-   "fieldtype": "Link",
-   "label": "Employee User",
-   "options": "User",
    "read_only": 1
   },
   {
@@ -84,7 +79,7 @@
   {
    "fieldname": "section_structure",
    "fieldtype": "Section Break",
-   "label": "Structure"
+   "label": "KPI Structure Details"
   },
   {
    "fieldname": "kpi_structure",
@@ -94,26 +89,6 @@
    "label": "KPI Structure",
    "options": "KPI Structure",
    "reqd": 1
-  },
-  {
-   "fieldname": "structure_version",
-   "fieldtype": "Int",
-   "label": "Structure Version",
-   "read_only": 1
-  },
-  {
-   "fieldname": "structure_designation",
-   "fieldtype": "Link",
-   "label": "Structure Designation",
-   "options": "Designation",
-   "read_only": 1
-  },
-  {
-   "fieldname": "structure_company",
-   "fieldtype": "Link",
-   "label": "Structure Company",
-   "options": "Company",
-   "read_only": 1
   },
   {
    "fieldname": "section_dates",
@@ -146,10 +121,12 @@
    "default": "Calendar Periods",
    "fieldname": "calendar_basis",
    "fieldtype": "Data",
-   "label": "Calendar Basis",
+   "hidden": 1,
+   "label": "Consideration Basis",
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "7",
    "fieldname": "self_rating_due_days",
    "fieldtype": "Int",
@@ -157,6 +134,7 @@
    "reqd": 1
   },
   {
+   "allow_on_submit": 1,
    "default": "7",
    "fieldname": "final_rating_due_days",
    "fieldtype": "Int",
@@ -174,19 +152,58 @@
    "reqd": 1
   },
   {
+   "allow_bulk_edit": 1,
    "fieldname": "target_overrides",
    "fieldtype": "Table",
    "label": "Target Overrides",
    "options": "KPI Assignment Target Override"
+  },
+  {
+   "fieldname": "employee_details_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Details"
+  },
+  {
+   "fieldname": "column_break_wgby",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "column_break_jyda",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "KPI Structure Assignment",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_zekf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_rhbs",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-08-22 00:00:00.000000",
+ "modified": "2026-08-22 20:42:08.937668",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "KPI Structure Assignment",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -227,6 +244,7 @@
    "role": "KPI Final Reviewer"
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
