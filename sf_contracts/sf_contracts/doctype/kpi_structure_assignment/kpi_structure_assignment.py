@@ -51,13 +51,11 @@ class KPIStructureAssignment(Document):
 			frappe.throw(_("Start Date cannot be after End Date."))
 
 	def validate_assignment_ready(self):
-		employee = frappe.db.get_value("Employee", self.employee, ["status", "user_id"], as_dict=True)
+		employee = frappe.db.get_value("Employee", self.employee, ["status"], as_dict=True)
 		if not employee:
 			frappe.throw(_("Employee is required."))
 		if employee.status != "Active":
 			frappe.throw(_("Employee must be Active before KPI assignment submission."))
-		if not employee.user_id:
-			frappe.throw(_("Employee must have a linked User before KPI assignment submission."))
 
 		structure = frappe.db.get_value(
 			"KPI Structure",
@@ -101,4 +99,3 @@ class KPIStructureAssignment(Document):
 		)
 		if overlap:
 			frappe.throw(_("Employee already has an overlapping Active KPI Structure Assignment: {0}").format(overlap[0].name))
-
