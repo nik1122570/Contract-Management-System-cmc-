@@ -59,7 +59,7 @@
   },
   {
    "fieldname": "indicator",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "label": "Indicator",
    "reqd": 1
   },

@@ -56,7 +56,7 @@
   },
   {
    "fieldname": "indicator",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "label": "Indicator",
    "read_only": 1
   },
