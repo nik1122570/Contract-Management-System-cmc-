@@ -30,3 +30,4 @@ sf_contracts.patches.tidy_compliance_tracker_list_view
 sf_contracts.patches.restore_contract_party_full_name
 sf_contracts.patches.remove_contractor_fields
 sf_contracts.patches.setup_kpi_management
+sf_contracts.patches.remove_kpi_review_dashboard_links
