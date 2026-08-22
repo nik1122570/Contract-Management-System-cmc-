@@ -203,26 +203,6 @@
 					.sfkpi-card.orange strong { color: #b76b00; }
 					.sfkpi-card.red strong { color: #b42318; }
 					.sfkpi-card.green strong { color: #08763d; }
-					.sfkpi-upcoming {
-						margin-top: 12px;
-					}
-					.sfkpi-upcoming-row {
-						background: #f8fbff;
-						border: 1px solid #e2edf8;
-						border-radius: 8px;
-						display: flex;
-						justify-content: space-between;
-						gap: 10px;
-						margin-top: 8px;
-						padding: 9px 10px;
-					}
-					.sfkpi-upcoming-row b {
-						color: #101828;
-					}
-					.sfkpi-upcoming-row span {
-						color: #667085;
-						font-size: 12px;
-					}
 					@media (max-width: 900px) {
 						.sfkpi-hero,
 						.sfkpi-body {
@@ -265,7 +245,6 @@
 	function render_content(data) {
 		const next = data.next_event || {};
 		const counts = data.counts || {};
-		const upcoming = data.upcoming || [];
 		const days = next.days;
 
 		$(`#${DASHBOARD_ID} .sfkpi-days`).text(days == null ? "-" : days < 0 ? "Due" : days);
@@ -285,22 +264,6 @@
 			${snapshot_card(__("Overdue Self Rating"), counts.overdue_self_rating, "Overdue KPI Reviews", { overdue_stage: "Self Rating" }, "red", true)}
 			${snapshot_card(__("Overdue Final Rating"), counts.overdue_final_rating, "Overdue KPI Reviews", { overdue_stage: "Final Rating" }, "red", true)}
 			${snapshot_card(__("Completed Reviews"), counts.completed_reviews, "KPI Review", { workflow_status: "Completed" }, "green")}
-		`);
-
-		const upcoming_html = upcoming.length
-			? upcoming.map((row) => `
-				<div class="sfkpi-upcoming-row">
-					<div><b>${escape_html(row.employee_name || row.employee || "-")}</b><br><span>${escape_html(row.period_key)} · ${escape_html(row.review_frequency)}</span></div>
-					<div><b>${frappe.datetime.str_to_user(row.next_review_date)}</b><br><span>${cint(row.days_to_next_review)} ${__("days")}</span></div>
-				</div>
-			`).join("")
-			: `<div class="text-muted">${__("No upcoming KPI review found.")}</div>`;
-
-		$(`#${DASHBOARD_ID} .sfkpi-next-details`).append(`
-			<div class="sfkpi-upcoming">
-				<div class="sfkpi-label">${__("Upcoming Assignments")}</div>
-				${upcoming_html}
-			</div>
 		`);
 
 		$(`#${DASHBOARD_ID} .sfkpi-card`).on("click", function () {
