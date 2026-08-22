@@ -6,7 +6,7 @@ def execute(filters=None):
 	filters = frappe._dict(filters or {})
 	columns = get_columns()
 	data = get_data(filters)
-	return columns, data, None, get_chart(data), get_summary(data)
+	return columns, data, None, get_chart(data)
 
 
 def get_columns():
@@ -66,13 +66,4 @@ def get_chart(data):
 		"type": "donut",
 	}
 
-
-def get_summary(data):
-	completed = len([row for row in data if row.workflow_status == "Completed"])
-	total = len(data)
-	return [
-		{"label": _("Total Reviews"), "value": total, "indicator": "Blue", "datatype": "Int"},
-		{"label": _("Completed"), "value": completed, "indicator": "Green", "datatype": "Int"},
-		{"label": _("Pending"), "value": total - completed, "indicator": "Orange", "datatype": "Int"},
-	]
 
