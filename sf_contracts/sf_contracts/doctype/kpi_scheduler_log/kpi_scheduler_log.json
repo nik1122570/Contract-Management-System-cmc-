@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "KPI-SCH-.YYYY.-.#####",
+ "creation": "2026-08-22 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "run_date",
+  "assignment",
+  "period_key",
+  "status",
+  "kpi_review",
+  "message"
+ ],
+ "fields": [
+  {
+   "fieldname": "run_date",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Run Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "assignment",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Assignment",
+   "options": "KPI Structure Assignment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "period_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Period",
+   "read_only": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Created\nSkipped\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "kpi_review",
+   "fieldtype": "Link",
+   "label": "KPI Review",
+   "options": "KPI Review",
+   "read_only": 1
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "label": "Message",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SF Contracts",
+ "name": "KPI Scheduler Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KPI Manager",
+   "share": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

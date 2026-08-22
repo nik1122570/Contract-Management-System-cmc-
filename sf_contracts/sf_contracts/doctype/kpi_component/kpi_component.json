@@ -1,0 +1,193 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:objective",
+ "creation": "2026-08-22 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "objective",
+  "status",
+  "section_measure",
+  "metric",
+  "indicator",
+  "perspective",
+  "column_measure",
+  "result_data_type",
+  "measurement_direction",
+  "data_source",
+  "section_target",
+  "scoring_method",
+  "default_target_operator",
+  "default_target_value",
+  "default_target_value_2",
+  "evidence_required",
+  "instructions",
+  "scoring_bands"
+ ],
+ "fields": [
+  {
+   "fieldname": "objective",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Objective",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Draft\nActive\nInactive",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_measure",
+   "fieldtype": "Section Break",
+   "label": "Measurement"
+  },
+  {
+   "fieldname": "metric",
+   "fieldtype": "Small Text",
+   "label": "Metric / Measure",
+   "reqd": 1
+  },
+  {
+   "fieldname": "indicator",
+   "fieldtype": "Data",
+   "label": "Indicator",
+   "reqd": 1
+  },
+  {
+   "fieldname": "perspective",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Perspective",
+   "options": "KPI Perspective",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_measure",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "result_data_type",
+   "fieldtype": "Select",
+   "label": "Result Data Type",
+   "options": "Percentage\nNumber\nCurrency\nDuration\nBoolean\nRating\nText/Milestone",
+   "reqd": 1
+  },
+  {
+   "fieldname": "measurement_direction",
+   "fieldtype": "Select",
+   "label": "Measurement Direction",
+   "options": "Higher is Better\nLower is Better\nExact Target\nTarget Range\nMilestone",
+   "reqd": 1
+  },
+  {
+   "default": "Manual",
+   "fieldname": "data_source",
+   "fieldtype": "Select",
+   "label": "Data Source",
+   "options": "Manual\nERPNext Report\nERPNext Document\nExternal",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_target",
+   "fieldtype": "Section Break",
+   "label": "Target & Scoring"
+  },
+  {
+   "fieldname": "scoring_method",
+   "fieldtype": "Select",
+   "label": "Scoring Method",
+   "options": "Manual Weighted Rating\nLinear Achievement\nThreshold Bands\nBinary Achievement",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_target_operator",
+   "fieldtype": "Select",
+   "label": "Default Target Operator",
+   "options": "\n=\n>\n>=\n<\n<=\nRange"
+  },
+  {
+   "fieldname": "default_target_value",
+   "fieldtype": "Float",
+   "label": "Default Target Value"
+  },
+  {
+   "fieldname": "default_target_value_2",
+   "fieldtype": "Float",
+   "label": "Default Target Value 2"
+  },
+  {
+   "default": "0",
+   "fieldname": "evidence_required",
+   "fieldtype": "Check",
+   "label": "Evidence Required"
+  },
+  {
+   "fieldname": "instructions",
+   "fieldtype": "Small Text",
+   "label": "Instructions"
+  },
+  {
+   "fieldname": "scoring_bands",
+   "fieldtype": "Table",
+   "label": "Scoring Bands",
+   "options": "KPI Scoring Band"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SF Contracts",
+ "name": "KPI Component",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KPI Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "KPI Employee"
+  },
+  {
+   "read": 1,
+   "role": "KPI Final Reviewer"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "objective",
+ "track_changes": 1
+}

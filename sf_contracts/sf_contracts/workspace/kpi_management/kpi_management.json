@@ -1,0 +1,169 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"kpi_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>KPI Management</b></span>\",\"col\":12}},{\"id\":\"kpi_shortcuts_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Shortcuts</b></span>\",\"col\":12}},{\"id\":\"kpi_review_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"KPI Review\",\"col\":3}},{\"id\":\"kpi_assignment_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"KPI Assignment\",\"col\":3}},{\"id\":\"kpi_structure_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"KPI Structure\",\"col\":3}},{\"id\":\"kpi_component_shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"KPI Component\",\"col\":3}},{\"id\":\"kpi_records_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Records</b></span>\",\"col\":12}},{\"id\":\"kpi_records_card\",\"type\":\"card\",\"data\":{\"card_name\":\"KPI Records\",\"col\":4}},{\"id\":\"kpi_reports_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports</b></span>\",\"col\":12}},{\"id\":\"kpi_reports_card\",\"type\":\"card\",\"data\":{\"card_name\":\"KPI Reports\",\"col\":4}}]",
+ "creation": "2026-08-22 00:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "target",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "KPI Management",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "KPI Records",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "KPI Review",
+   "link_count": 0,
+   "link_to": "KPI Review",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "KPI Structure Assignment",
+   "link_count": 0,
+   "link_to": "KPI Structure Assignment",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "KPI Structure",
+   "link_count": 0,
+   "link_to": "KPI Structure",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "KPI Component",
+   "link_count": 0,
+   "link_to": "KPI Component",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "KPI Perspective",
+   "link_count": 0,
+   "link_to": "KPI Perspective",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "KPI Scheduler Log",
+   "link_count": 0,
+   "link_to": "KPI Scheduler Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "KPI Reports",
+   "link_count": 0,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "KPI Review Completion Status",
+   "link_count": 0,
+   "link_to": "KPI Review Completion Status",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Overdue KPI Reviews",
+   "link_count": 0,
+   "link_to": "Overdue KPI Reviews",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-08-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SF Contracts",
+ "name": "KPI Management",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [],
+ "sequence_id": 2.0,
+ "shortcuts": [
+  {
+   "color": "#005aa8",
+   "doc_view": "List",
+   "format": "{}",
+   "icon": "review",
+   "label": "KPI Review",
+   "link_to": "KPI Review",
+   "stats_filter": "{}",
+   "type": "DocType"
+  },
+  {
+   "color": "#009847",
+   "doc_view": "List",
+   "format": "{}",
+   "icon": "assign",
+   "label": "KPI Assignment",
+   "link_to": "KPI Structure Assignment",
+   "stats_filter": "{}",
+   "type": "DocType"
+  },
+  {
+   "color": "#005aa8",
+   "doc_view": "List",
+   "format": "{}",
+   "icon": "organization",
+   "label": "KPI Structure",
+   "link_to": "KPI Structure",
+   "stats_filter": "{}",
+   "type": "DocType"
+  },
+  {
+   "color": "#009847",
+   "doc_view": "List",
+   "format": "{}",
+   "icon": "target",
+   "label": "KPI Component",
+   "link_to": "KPI Component",
+   "stats_filter": "{}",
+   "type": "DocType"
+  }
+ ],
+ "title": "KPI Management"
+}

@@ -1,0 +1,157 @@
+{
+ "actions": [],
+ "creation": "2026-08-22 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "kpi_component",
+  "objective",
+  "perspective",
+  "metric",
+  "indicator",
+  "target_operator",
+  "target_value",
+  "target_value_2",
+  "target_display",
+  "weight",
+  "evidence_required",
+  "actual_result",
+  "evidence",
+  "evidence_comment",
+  "employee_comment",
+  "self_rating",
+  "recommended_score",
+  "final_rating",
+  "reviewer_comment"
+ ],
+ "fields": [
+  {
+   "fieldname": "kpi_component",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "KPI Component",
+   "options": "KPI Component",
+   "read_only": 1
+  },
+  {
+   "fieldname": "objective",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Objective",
+   "read_only": 1
+  },
+  {
+   "fieldname": "perspective",
+   "fieldtype": "Link",
+   "label": "Perspective",
+   "options": "KPI Perspective",
+   "read_only": 1
+  },
+  {
+   "fieldname": "metric",
+   "fieldtype": "Small Text",
+   "label": "Metric",
+   "read_only": 1
+  },
+  {
+   "fieldname": "indicator",
+   "fieldtype": "Data",
+   "label": "Indicator",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_operator",
+   "fieldtype": "Data",
+   "label": "Target Operator",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_value",
+   "fieldtype": "Float",
+   "label": "Target Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_value_2",
+   "fieldtype": "Float",
+   "label": "Target Value 2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_display",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Target",
+   "read_only": 1
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Weight",
+   "read_only": 1
+  },
+  {
+   "fieldname": "evidence_required",
+   "fieldtype": "Check",
+   "label": "Evidence Required",
+   "read_only": 1
+  },
+  {
+   "fieldname": "actual_result",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Actual Result"
+  },
+  {
+   "fieldname": "evidence",
+   "fieldtype": "Attach",
+   "label": "Evidence"
+  },
+  {
+   "fieldname": "evidence_comment",
+   "fieldtype": "Small Text",
+   "label": "Evidence Comment"
+  },
+  {
+   "fieldname": "employee_comment",
+   "fieldtype": "Small Text",
+   "label": "Employee Comment"
+  },
+  {
+   "fieldname": "self_rating",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Self Rating"
+  },
+  {
+   "fieldname": "recommended_score",
+   "fieldtype": "Float",
+   "label": "Recommended Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "final_rating",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Final Rating"
+  },
+  {
+   "fieldname": "reviewer_comment",
+   "fieldtype": "Small Text",
+   "label": "Reviewer Comment"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SF Contracts",
+ "name": "KPI Review Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

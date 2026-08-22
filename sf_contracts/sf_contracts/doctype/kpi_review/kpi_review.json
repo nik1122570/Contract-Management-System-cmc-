@@ -1,0 +1,334 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "KPR-.YYYY.-.#####",
+ "creation": "2026-08-22 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_employee",
+  "employee",
+  "employee_name",
+  "employee_user",
+  "company",
+  "department",
+  "designation",
+  "section_period",
+  "kpi_structure_assignment",
+  "kpi_structure",
+  "review_frequency",
+  "period_key",
+  "period_start_date",
+  "period_end_date",
+  "self_rating_due_date",
+  "final_rating_due_date",
+  "workflow_status",
+  "section_scores",
+  "total_weight",
+  "self_total",
+  "final_total",
+  "rating_category",
+  "section_summary",
+  "employee_summary",
+  "employee_accepted",
+  "employee_accepted_by",
+  "employee_accepted_on",
+  "return_reason",
+  "final_reviewer_summary",
+  "final_reviewed_by",
+  "final_reviewed_on",
+  "review_items"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_employee",
+   "fieldtype": "Section Break",
+   "label": "Employee"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_user",
+   "fieldtype": "Link",
+   "label": "Employee User",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Designation",
+   "options": "Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_period",
+   "fieldtype": "Section Break",
+   "label": "Review Period"
+  },
+  {
+   "fieldname": "kpi_structure_assignment",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "KPI Structure Assignment",
+   "options": "KPI Structure Assignment",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "kpi_structure",
+   "fieldtype": "Link",
+   "label": "KPI Structure",
+   "options": "KPI Structure",
+   "read_only": 1
+  },
+  {
+   "fieldname": "review_frequency",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Review Frequency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "period_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Period",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "period_start_date",
+   "fieldtype": "Date",
+   "label": "Period Start Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "period_end_date",
+   "fieldtype": "Date",
+   "label": "Period End Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "self_rating_due_date",
+   "fieldtype": "Date",
+   "label": "Self-rating Due Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "final_rating_due_date",
+   "fieldtype": "Date",
+   "label": "Final-rating Due Date",
+   "read_only": 1
+  },
+  {
+   "default": "Pending Self Rating",
+   "fieldname": "workflow_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Workflow Status",
+   "options": "Pending Self Rating\nPending Final Rating\nCompleted\nCancelled",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_scores",
+   "fieldtype": "Section Break",
+   "label": "Scores"
+  },
+  {
+   "fieldname": "total_weight",
+   "fieldtype": "Float",
+   "label": "Total Weight",
+   "read_only": 1
+  },
+  {
+   "fieldname": "self_total",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Self Total",
+   "read_only": 1
+  },
+  {
+   "fieldname": "final_total",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Final Total",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rating_category",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Rating Category",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_summary",
+   "fieldtype": "Section Break",
+   "label": "Summary"
+  },
+  {
+   "fieldname": "employee_summary",
+   "fieldtype": "Small Text",
+   "label": "Employee Summary"
+  },
+  {
+   "fieldname": "employee_accepted",
+   "fieldtype": "Check",
+   "label": "Employee Accepted",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_accepted_by",
+   "fieldtype": "Link",
+   "label": "Employee Accepted By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "employee_accepted_on",
+   "fieldtype": "Datetime",
+   "label": "Employee Accepted On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "return_reason",
+   "fieldtype": "Small Text",
+   "label": "Return Reason",
+   "read_only": 1
+  },
+  {
+   "fieldname": "final_reviewer_summary",
+   "fieldtype": "Small Text",
+   "label": "Final Reviewer Summary"
+  },
+  {
+   "fieldname": "final_reviewed_by",
+   "fieldtype": "Link",
+   "label": "Final Reviewed By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "final_reviewed_on",
+   "fieldtype": "Datetime",
+   "label": "Final Reviewed On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "review_items",
+   "fieldtype": "Table",
+   "label": "KPI Items",
+   "options": "KPI Review Item",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [
+  {
+   "link_doctype": "KPI Structure Assignment",
+   "link_fieldname": "kpi_structure_assignment"
+  },
+  {
+   "link_doctype": "KPI Structure",
+   "link_fieldname": "kpi_structure"
+  }
+ ],
+ "modified": "2026-08-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SF Contracts",
+ "name": "KPI Review",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KPI Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KPI Employee",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KPI Final Reviewer",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

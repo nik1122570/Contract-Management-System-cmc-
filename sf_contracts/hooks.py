@@ -160,6 +160,7 @@ override_doctype_dashboards = {
 scheduler_events = {
 	"daily": [
 		"sf_contracts.contract_lifecycle.update_lifecycle_status_for_contracts",
+		"sf_contracts.kpi_management.create_due_reviews",
 	],
 }
 

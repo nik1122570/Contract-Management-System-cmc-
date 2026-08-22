@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "creation": "2026-08-22 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "condition",
+  "from_value",
+  "to_value",
+  "score_percentage",
+  "label"
+ ],
+ "fields": [
+  {
+   "fieldname": "condition",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Condition",
+   "options": "Range\nEqual\nGreater Than\nLess Than",
+   "reqd": 1
+  },
+  {
+   "fieldname": "from_value",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "From Value"
+  },
+  {
+   "fieldname": "to_value",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "To Value"
+  },
+  {
+   "fieldname": "score_percentage",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Score Percentage",
+   "reqd": 1
+  },
+  {
+   "fieldname": "label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Label"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SF Contracts",
+ "name": "KPI Scoring Band",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
+

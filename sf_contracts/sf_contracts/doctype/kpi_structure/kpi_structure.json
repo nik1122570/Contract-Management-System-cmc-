@@ -1,0 +1,151 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "Prompt",
+ "creation": "2026-08-22 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "designation",
+  "company",
+  "version",
+  "status",
+  "column_dates",
+  "effective_from",
+  "effective_to",
+  "total_weight",
+  "rating_scale",
+  "instructions",
+  "components"
+ ],
+ "fields": [
+  {
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Designation",
+   "options": "Designation",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "default": "1",
+   "fieldname": "version",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Version",
+   "reqd": 1
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Draft\nActive\nSuperseded\nInactive",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_dates",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "effective_from",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Effective From",
+   "reqd": 1
+  },
+  {
+   "fieldname": "effective_to",
+   "fieldtype": "Date",
+   "label": "Effective To"
+  },
+  {
+   "fieldname": "total_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total Weight",
+   "read_only": 1
+  },
+  {
+   "default": "SF Standard 0-100",
+   "fieldname": "rating_scale",
+   "fieldtype": "Data",
+   "label": "Rating Scale"
+  },
+  {
+   "fieldname": "instructions",
+   "fieldtype": "Text Editor",
+   "label": "Instructions"
+  },
+  {
+   "fieldname": "components",
+   "fieldtype": "Table",
+   "label": "Components",
+   "options": "KPI Structure Item",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-08-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SF Contracts",
+ "name": "KPI Structure",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KPI Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "KPI Employee"
+  },
+  {
+   "read": 1,
+   "role": "KPI Final Reviewer"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "designation",
+ "track_changes": 1
+}

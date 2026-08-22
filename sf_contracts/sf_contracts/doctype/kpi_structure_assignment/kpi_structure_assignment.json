@@ -1,0 +1,235 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "KSA-.YYYY.-.#####",
+ "creation": "2026-08-22 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "employee_user",
+  "company",
+  "department",
+  "designation",
+  "section_structure",
+  "kpi_structure",
+  "structure_version",
+  "structure_designation",
+  "structure_company",
+  "section_dates",
+  "start_date",
+  "end_date",
+  "review_frequency",
+  "calendar_basis",
+  "self_rating_due_days",
+  "final_rating_due_days",
+  "status",
+  "target_overrides"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.user_id",
+   "fieldname": "employee_user",
+   "fieldtype": "Link",
+   "label": "Employee User",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Designation",
+   "options": "Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_structure",
+   "fieldtype": "Section Break",
+   "label": "Structure"
+  },
+  {
+   "fieldname": "kpi_structure",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "KPI Structure",
+   "options": "KPI Structure",
+   "reqd": 1
+  },
+  {
+   "fieldname": "structure_version",
+   "fieldtype": "Int",
+   "label": "Structure Version",
+   "read_only": 1
+  },
+  {
+   "fieldname": "structure_designation",
+   "fieldtype": "Link",
+   "label": "Structure Designation",
+   "options": "Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "structure_company",
+   "fieldtype": "Link",
+   "label": "Structure Company",
+   "options": "Company",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_dates",
+   "fieldtype": "Section Break",
+   "label": "Validity & Frequency"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "review_frequency",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Review Frequency",
+   "options": "Monthly\nQuarterly\nSemi-Annual",
+   "reqd": 1
+  },
+  {
+   "default": "Calendar Periods",
+   "fieldname": "calendar_basis",
+   "fieldtype": "Data",
+   "label": "Calendar Basis",
+   "read_only": 1
+  },
+  {
+   "default": "7",
+   "fieldname": "self_rating_due_days",
+   "fieldtype": "Int",
+   "label": "Self-rating Due Days",
+   "reqd": 1
+  },
+  {
+   "default": "7",
+   "fieldname": "final_rating_due_days",
+   "fieldtype": "Int",
+   "label": "Final-rating Due Days",
+   "reqd": 1
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Draft\nActive\nCompleted\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_overrides",
+   "fieldtype": "Table",
+   "label": "Target Overrides",
+   "options": "KPI Assignment Target Override"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-08-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SF Contracts",
+ "name": "KPI Structure Assignment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "KPI Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "KPI Employee"
+  },
+  {
+   "read": 1,
+   "role": "KPI Final Reviewer"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "employee_name",
+ "track_changes": 1
+}
