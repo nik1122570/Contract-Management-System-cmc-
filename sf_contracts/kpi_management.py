@@ -3,7 +3,7 @@ from datetime import date
 
 import frappe
 from frappe import _
-from frappe.utils import add_days, getdate, now_datetime, today
+from frappe.utils import add_days, date_diff, getdate, now_datetime, today
 
 
 def _month_bounds(year, month):
@@ -50,6 +50,121 @@ def get_previous_closed_period(review_frequency, reference_date=None):
 		return f"{year}-H{half}", start, end
 
 	frappe.throw(_("Unsupported review frequency: {0}").format(review_frequency))
+
+
+def get_current_period(review_frequency, reference_date=None):
+	reference = getdate(reference_date or today())
+	year = reference.year
+	month = reference.month
+
+	if review_frequency == "Monthly":
+		start, end = _month_bounds(year, month)
+		return f"{year}-{month:02d}", start, end
+
+	if review_frequency == "Quarterly":
+		quarter = ((month - 1) // 3) + 1
+		start_month = ((quarter - 1) * 3) + 1
+		start, _ = _month_bounds(year, start_month)
+		_, end = _month_bounds(year, start_month + 2)
+		return f"{year}-Q{quarter}", start, end
+
+	if review_frequency == "Semi-Annual":
+		half = 1 if month <= 6 else 2
+		start_month = 1 if half == 1 else 7
+		start, _ = _month_bounds(year, start_month)
+		_, end = _month_bounds(year, start_month + 5)
+		return f"{year}-H{half}", start, end
+
+	frappe.throw(_("Unsupported review frequency: {0}").format(review_frequency))
+
+
+@frappe.whitelist()
+def get_kpi_workspace_dashboard():
+	today_date = getdate(today())
+	assignments = frappe.get_all(
+		"KPI Structure Assignment",
+		filters={"docstatus": 1, "status": "Active"},
+		fields=[
+			"name",
+			"employee",
+			"employee_name",
+			"review_frequency",
+			"start_date",
+			"end_date",
+			"kpi_structure",
+		],
+	)
+
+	next_events = []
+	for assignment in assignments:
+		if not assignment.review_frequency:
+			continue
+		period_key, period_start, period_end = get_current_period(assignment.review_frequency)
+		if getdate(period_end) < getdate(assignment.start_date) or getdate(period_start) > getdate(assignment.end_date):
+			continue
+		next_date = getdate(add_days(period_end, 1))
+		next_events.append(
+			{
+				"assignment": assignment.name,
+				"employee": assignment.employee,
+				"employee_name": assignment.employee_name,
+				"kpi_structure": assignment.kpi_structure,
+				"review_frequency": assignment.review_frequency,
+				"period_key": period_key,
+				"period_start_date": period_start,
+				"period_end_date": period_end,
+				"next_review_date": next_date,
+				"days_to_next_review": date_diff(next_date, today_date),
+			}
+		)
+
+	next_events = sorted(next_events, key=lambda row: row["next_review_date"])
+	next_event_date = next_events[0]["next_review_date"] if next_events else None
+	next_event_assignments = [
+		row for row in next_events if row["next_review_date"] == next_event_date
+	] if next_event_date else []
+
+	return {
+		"next_event": {
+			"date": next_event_date,
+			"days": date_diff(next_event_date, today_date) if next_event_date else None,
+			"assignments": len(next_event_assignments),
+			"periods": sorted({row["period_key"] for row in next_event_assignments}),
+			"frequency": sorted({row["review_frequency"] for row in next_event_assignments}),
+		},
+		"counts": {
+			"active_assignments": len(assignments),
+			"pending_self_rating": frappe.db.count(
+				"KPI Review",
+				{"docstatus": ["!=", 2], "workflow_status": "Pending Self Rating"},
+			),
+			"pending_final_rating": frappe.db.count(
+				"KPI Review",
+				{"docstatus": ["!=", 2], "workflow_status": "Pending Final Rating"},
+			),
+			"completed_reviews": frappe.db.count(
+				"KPI Review",
+				{"docstatus": 1, "workflow_status": "Completed"},
+			),
+			"overdue_self_rating": frappe.db.count(
+				"KPI Review",
+				{
+					"docstatus": ["!=", 2],
+					"workflow_status": "Pending Self Rating",
+					"self_rating_due_date": ["<", today_date],
+				},
+			),
+			"overdue_final_rating": frappe.db.count(
+				"KPI Review",
+				{
+					"docstatus": ["!=", 2],
+					"workflow_status": "Pending Final Rating",
+					"final_rating_due_date": ["<", today_date],
+				},
+			),
+		},
+		"upcoming": next_events[:5],
+	}
 
 
 @frappe.whitelist()
