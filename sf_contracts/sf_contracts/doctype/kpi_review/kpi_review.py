@@ -62,13 +62,13 @@ class KPIReview(Document):
 		return self.employee_user and frappe.session.user == self.employee_user
 
 	def _can_final_review(self):
-		return any(frappe.has_role(role) for role in ("System Manager", "KPI Manager", "KPI Final Reviewer"))
+		return has_any_role("System Manager", "KPI Manager", "KPI Final Reviewer")
 
 	@frappe.whitelist()
 	def self_submit(self):
 		if self.workflow_status != "Pending Self Rating":
 			frappe.throw(_("This KPI Review is not pending self rating."))
-		if not (self._is_employee_user() or frappe.has_role("System Manager")):
+		if not (self._is_employee_user() or has_any_role("System Manager")):
 			frappe.throw(_("Only the assigned employee can submit the self rating."))
 		if not self.employee_summary:
 			frappe.throw(_("Employee Summary is required."))
@@ -114,3 +114,7 @@ class KPIReview(Document):
 			self.save()
 		return self.name
 
+
+def has_any_role(*roles):
+	user_roles = set(frappe.get_roles(frappe.session.user))
+	return bool(user_roles.intersection(roles))
