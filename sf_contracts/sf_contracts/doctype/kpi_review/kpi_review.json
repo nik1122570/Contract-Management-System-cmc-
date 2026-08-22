@@ -262,16 +262,7 @@
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [
-  {
-   "link_doctype": "KPI Structure Assignment",
-   "link_fieldname": "kpi_structure_assignment"
-  },
-  {
-   "link_doctype": "KPI Structure",
-   "link_fieldname": "kpi_structure"
-  }
- ],
+ "links": [],
  "modified": "2026-08-22 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "SF Contracts",
