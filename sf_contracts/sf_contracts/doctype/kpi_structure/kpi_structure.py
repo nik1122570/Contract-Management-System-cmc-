@@ -1,3 +1,5 @@
+import json
+
 import frappe
 from frappe import _
 from frappe.model.document import Document
@@ -105,3 +107,107 @@ def get_target_display(operator, value, value_2=None):
 	if operator == "Range":
 		return f"{value or 0} - {value_2 or 0}"
 	return f"{operator} {value or 0}"
+
+
+@frappe.whitelist()
+def bulk_assign_kpi_structure(
+	kpi_structure,
+	employees,
+	start_date,
+	end_date,
+	review_frequency,
+	self_rating_due_days=7,
+	final_rating_due_days=7,
+	submit_assignments=1,
+):
+	if not has_any_role("System Manager", "KPI Manager"):
+		frappe.throw(_("Only System Manager or KPI Manager can assign KPI Structures in bulk."))
+
+	if isinstance(employees, str):
+		employees = json.loads(employees)
+
+	employee_names = []
+	for row in employees or []:
+		if isinstance(row, dict):
+			employee = row.get("employee")
+		else:
+			employee = row
+		if employee and employee not in employee_names:
+			employee_names.append(employee)
+
+	if not employee_names:
+		frappe.throw(_("Please select at least one Employee."))
+
+	structure = frappe.db.get_value(
+		"KPI Structure",
+		kpi_structure,
+		["name", "designation", "company", "status", "docstatus", "effective_from", "effective_to"],
+		as_dict=True,
+	)
+	if not structure:
+		frappe.throw(_("KPI Structure not found."))
+	if structure.docstatus != 1 or structure.status != "Active":
+		frappe.throw(_("KPI Structure must be submitted and Active before bulk assignment."))
+
+	results = {"created": [], "skipped": [], "failed": []}
+
+	for employee in employee_names:
+		try:
+			existing = get_overlapping_assignment(employee, start_date, end_date)
+			if existing:
+				results["skipped"].append(
+					{
+						"employee": employee,
+						"reason": _("Overlapping Active assignment already exists: {0}").format(existing),
+					}
+				)
+				continue
+
+			assignment = frappe.new_doc("KPI Structure Assignment")
+			assignment.employee = employee
+			assignment.kpi_structure = kpi_structure
+			assignment.start_date = start_date
+			assignment.end_date = end_date
+			assignment.review_frequency = review_frequency
+			assignment.self_rating_due_days = self_rating_due_days or 7
+			assignment.final_rating_due_days = final_rating_due_days or 7
+			assignment.insert(ignore_permissions=True)
+
+			if int(submit_assignments or 0):
+				assignment.submit()
+
+			results["created"].append({"employee": employee, "assignment": assignment.name})
+		except Exception as exc:
+			frappe.db.rollback()
+			results["failed"].append({"employee": employee, "reason": str(exc)})
+		else:
+			frappe.db.commit()
+
+	return results
+
+
+def get_overlapping_assignment(employee, start_date, end_date):
+	overlap = frappe.db.sql(
+		"""
+		select name
+		from `tabKPI Structure Assignment`
+		where employee = %(employee)s
+			and docstatus = 1
+			and status = 'Active'
+			and start_date <= %(end_date)s
+			and end_date >= %(start_date)s
+		limit 1
+		""",
+		{
+			"employee": employee,
+			"start_date": start_date,
+			"end_date": end_date,
+		},
+		as_dict=True,
+	)
+	return overlap[0].name if overlap else None
+
+
+def has_any_role(*roles):
+	user_roles = set(frappe.get_roles(frappe.session.user))
+	return bool(user_roles.intersection(roles))
