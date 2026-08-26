@@ -8,10 +8,12 @@
  "field_order": [
   "risk",
   "terms",
-  "contractual_obligation",
   "responsible_person",
-  "evidence_required",
-  "compliance_status"
+  "compliance_status",
+  "review_period",
+  "column_break_zbjo",
+  "contractual_obligation",
+  "evidence_required"
  ],
  "fields": [
   {
@@ -40,7 +42,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Compliance Status",
-   "options": "\nCompliant\nNon- Compliant"
+   "options": "Pending\nCompliant\nNon- Compliant"
   },
   {
    "bold": 1,
@@ -57,13 +59,25 @@
    "label": "Risk",
    "options": "\nHigh\nMedium\nLow",
    "reqd": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "review_period",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Review Period",
+   "options": "\nMonthly\nQuarterly\nYearly"
+  },
+  {
+   "fieldname": "column_break_zbjo",
+   "fieldtype": "Column Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-08-13 22:15:23.505810",
+ "modified": "2026-08-26 22:03:35.200618",
  "modified_by": "Administrator",
  "module": "SF Contracts",
  "name": "Contract Table 1",
