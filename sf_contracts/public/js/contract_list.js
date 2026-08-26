@@ -4,14 +4,17 @@
 	Terminated: "red",
 };
 
+if (!frappe._sf_contract_original_has_indicator) {
+	frappe._sf_contract_original_has_indicator = frappe.has_indicator;
+	frappe.has_indicator = function (doctype) {
+		if (doctype === "Contract") {
+			return false;
+		}
+		return frappe._sf_contract_original_has_indicator.apply(this, arguments);
+	};
+}
+
 frappe.listview_settings["Contract"] = {
-	add_fields: ["sf_contract_lifecycle_status", "workflow_state", "company", "sf_contract_type"],
+	add_fields: ["party_name", "workflow_state", "company", "sf_contract_lifecycle_status"],
 	hide_name_column: true,
-
-	get_indicator(doc) {
-		const status = doc.sf_contract_lifecycle_status || "Active";
-		const color = window.sfContractLifecycleColors[status] || "gray";
-
-		return [__(status), color, `sf_contract_lifecycle_status,=,${status}`];
-	},
 };

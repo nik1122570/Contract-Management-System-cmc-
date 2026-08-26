@@ -1060,7 +1060,7 @@
    "property": "in_list_view",
    "property_type": "Check",
    "row_name": null,
-   "value": "0"
+   "value": "1"
   },
   {
    "_assign": null,
@@ -1313,7 +1313,7 @@
    "property": "in_list_view",
    "property_type": "Check",
    "row_name": null,
-   "value": "1"
+   "value": "0"
   },
   {
    "_assign": null,

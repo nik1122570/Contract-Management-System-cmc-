@@ -450,20 +450,24 @@ def sync_contract_field_order():
 def set_contract_list_view_fields():
 	"""Keep Contract list view focused for Legal users."""
 	visible_fields = {
+		"party_name",
 		"company",
 		"workflow_state",
 		"sf_contract_lifecycle_status",
-		"sf_contract_type",
 	}
 	hidden_fields = {
-		"party_name",
 		"status",
+		"sf_contract_type",
 		"sf_contract_health_score",
 		"fulfilment_status",
 		"signed_on",
 		"is_signed",
 		"sf_signed_contract_document",
 		"sf_compliance_tracker",
+		"contract_file",
+		"contract_terms",
+		"document_type",
+		"document_name",
 	}
 
 	for fieldname in visible_fields:

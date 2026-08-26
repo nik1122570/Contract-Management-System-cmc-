@@ -4,16 +4,6 @@
 	Terminated: "red",
 };
 
-function getContractLifecycleIndicator(doc) {
-	const status = doc.sf_contract_lifecycle_status || "Active";
-	const color = window.sfContractLifecycleColors[status] || "gray";
-
-	return [__(status), color, `sf_contract_lifecycle_status,=,${status}`];
-}
-
-frappe.listview_settings["Contract"] = frappe.listview_settings["Contract"] || {};
-frappe.listview_settings["Contract"].get_indicator = getContractLifecycleIndicator;
-
 function setSubmittedForSigningOnDraft(frm) {
 	if (frm.doc.docstatus === 0 && frm.fields_dict.submitted_for_signing && !frm.doc.submitted_for_signing) {
 		frm.set_value("submitted_for_signing", 1);
