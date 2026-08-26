@@ -59,6 +59,14 @@ def add_contract_party_compatibility_fields():
 		frappe.clear_cache(doctype="Contract")
 
 
+def set_contract_party_type_options():
+	"""Use SF-facing party labels on ERPNext Contract."""
+	options = "Client\nSupplier\nEmployee"
+	make_property_setter("Contract", "party_type", "options", options, "Text")
+	make_property_setter("Contract", "party_type", "default", "Client", "Data")
+	frappe.clear_cache(doctype="Contract")
+
+
 def add_contract_lifecycle_fields():
 	"""Add Legal-facing lifecycle fields to ERPNext Contract."""
 	custom_fields = {
@@ -511,6 +519,7 @@ def clear_contract_custom_field_descriptions():
 
 def setup_contract_customizations():
 	add_contract_party_compatibility_fields()
+	set_contract_party_type_options()
 	add_signed_contract_document_field()
 	add_contract_lifecycle_fields()
 	add_contract_business_fields()
